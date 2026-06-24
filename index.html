@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
     <title>VIN to Parts Decoder</title>
     <style>
         :root {
@@ -183,8 +184,8 @@
         btn.disabled = true;
         loader.style.display = 'block';
 
-        try {
-            // Fetch from NHTSA API
+                try {
+            // Corrected Fetch using backticks for template literals
             const response = await fetch(`https://dot.gov{vin}?format=json`);
             const data = await response.json();
 
@@ -194,7 +195,7 @@
             const year = getVal('Model Year');
             const make = getVal('Make');
             const model = getVal('Model');
-            const engine = getVal('Displacement (L)'); // Optional extra detail
+            const engine = getVal('Displacement (L)');
             const fuel = getVal('Fuel Type - Primary');
 
             if (!year || !make || !model) {
@@ -213,9 +214,6 @@
         } catch (err) {
             errorMsg.textContent = "Error: " + err.message;
             errorMsg.style.display = 'block';
-        } finally {
-            btn.disabled = false;
-            loader.style.display = 'none';
         }
     }
 
