@@ -1,927 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2563eb" />
-  <link rel="icon" href="data:," />
-  <title>VIN Parts Finder</title>
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-600: #1d4ed8;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --danger: #dc2626;
-      --success: #16a34a;
-      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-      --radius: 16px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(180deg, #eff6ff 0%, var(--bg) 220px);
-      color: var(--text);
-    }
-
-    .wrap {
-      width: 100%;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 28px 16px 18px;
-    }
-
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: clamp(2rem, 4vw, 3rem);
-      letter-spacing: -0.03em;
-    }
-
-    .hero p {
-      margin: 0 auto;
-      max-width: 840px;
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
-
-    .split {
-      display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 18px;
-    }
-
-    .stack { display: grid; gap: 10px; }
-
-    label { font-weight: 700; }
-
-    textarea, input, select {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font: inherit;
-      color: var(--text);
-      background: #fff;
-      outline: none;
-    }
-
-    textarea:focus, input:focus, select:focus {
-      border-color: rgba(37, 99, 235, 0.6);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-    }
-
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-
-    input {
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    .input-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: start;
-    }
-
-    .btns {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    button, .link-btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .15s ease, opacity .15s ease, background .15s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    button:hover, .link-btn:hover { transform: translateY(-1px); }
-    button:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-
-    .primary { background: var(--primary); color: #fff; }
-    .primary:hover { background: var(--primary-600); }
-    .soft { background: #e2e8f0; color: #0f172a; }
-    .ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
-
-    .status {
-      margin-top: 10px;
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-    .status.error { color: var(--danger); }
-    .status.success { color: var(--success); }
-
-    .results { display: none; }
-
-    .vehicle-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .vehicle-title {
-      margin: 0;
-      font-size: clamp(1.25rem, 2.2vw, 1.8rem);
-      letter-spacing: -0.02em;
-    }
-
-    .vehicle-subtitle, .small {
-      margin: 6px 0 0;
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 0.95rem;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1e40af;
-      font-size: 0.88rem;
-      font-weight: 600;
-    }
-
-    .section-title {
-      margin: 0 0 12px;
-      font-size: 1.08rem;
-    }
-
-    .parts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-    }
-
-    .part-card {
-      border: 1px solid var(--border);
-      background: #f8fafc;
-      border-radius: 14px;
-      padding: 14px;
-      text-decoration: none;
-      color: var(--text);
-      min-height: 92px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-      transition: transform .15s ease, border-color .15s ease, background .15s ease;
-    }
-
-    .part-card:hover {
-      transform: translateY(-2px);
-      border-color: #cbd5e1;
-      background: #eef2ff;
-    }
-
-    .part-name { font-weight: 700; }
-    .part-meta { font-size: 0.88rem; color: var(--muted); }
-
-    .footer-note {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.6;
-      margin-top: 8px;
-    }
-
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 980px;
-      background: #fff;
-    }
-
-    thead th {
-      position: sticky;
-      top: 0;
-      background: #eff6ff;
-      z-index: 1;
-    }
-
-    th, td {
-      text-align: left;
-      padding: 12px 10px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-      font-size: 0.92rem;
-    }
-
-    tbody tr:hover { background: #f8fafc; }
-
-    .muted { color: var(--muted); }
-
-    @media (max-width: 900px) {
-      .split { grid-template-columns: 1fr; }
-      .input-row { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIN Parts Finder</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:16px}
+.wrap{max-width:1100px;margin:0 auto}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:18px 20px;margin-bottom:14px}
+h1{font-size:22px;color:#58a6ff;font-weight:700;margin-bottom:4px}
+.sub{color:#8b949e;font-size:13px}
+input[type=text],input[type=password]{background:#0d1117;border:1px solid #30363d;border-radius:7px;padding:10px 13px;color:#e6edf3;font-size:14px;outline:none;width:100%;font-family:inherit;transition:border .15s}
+input:focus{border-color:#58a6ff}
+.vin-in{font-family:'Courier New',monospace;font-size:16px;letter-spacing:2px}
+.btn{border:none;border-radius:7px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:#238636;color:#fff}
+.btn-blue{background:#1f6feb;color:#fff}
+.btn-ghost{background:#21262d;color:#e6edf3;border:1px solid #30363d}
+.btn-sm{padding:6px 14px;font-size:12px}
+.progress-bar{height:3px;background:#21262d;border-radius:2px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;border-radius:2px;transition:width .1s,background .2s}
+.error-box{background:#3d1717;border:1px solid #f85149;border-radius:7px;padding:9px 13px;color:#f85149;font-size:13px;margin-top:10px;display:none}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:14px}
+.info-cell{background:#0d1117;border-radius:7px;padding:9px 12px}
+.info-label{color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.info-value{font-size:12px;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.chip{border-radius:20px;padding:4px 13px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #30363d;background:#161b22;color:#8b949e;transition:all .15s}
+.parts-table{width:100%;border-collapse:collapse;font-size:13px}
+.parts-table th{padding:8px 13px;text-align:left;color:#8b949e;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #30363d;background:#21262d}
+.parts-table td{padding:9px 13px;vertical-align:top}
+.part-num{font-family:'Courier New',monospace;color:#58a6ff;font-size:12px;letter-spacing:.03em}
+.alt-tag{display:inline-flex;align-items:center;gap:5px;background:#1c2128;border:1px solid #30363d;border-radius:5px;padding:2px 8px;font-size:11px;margin:2px}
+.alt-brand{color:#f0883e;font-weight:600}
+.alt-num{font-family:monospace;color:#3fb950}
+.cat-header{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:13px;font-weight:600}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cat-count{color:#484f58;font-size:11px;font-weight:400}
+.table-wrap{background:#161b22;border:1px solid #30363d;border-radius:9px;overflow:hidden;margin-bottom:14px}
+.row-flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.footer-note{margin-top:8px;padding:10px 14px;background:#1c2128;border:1px solid #30363d;border-radius:7px;font-size:11px;color:#8b949e;line-height:1.5;display:none}
+.toggle-link{background:none;border:none;color:#484f58;font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0}
+.empty-state{text-align:center;padding:60px 20px;color:#8b949e}
+.empty-icon{font-size:52px;margin-bottom:16px}
+.empty-title{font-size:16px;font-weight:600;color:#e6edf3;margin-bottom:6px}
+.model-select{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 10px;color:#e6edf3;font-size:12px;cursor:pointer;outline:none}
+@media(max-width:600px){.hide-sm{display:none}body{padding:10px}h1{font-size:19px}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <h1>VIN Parts Finder</h1>
-      <p>
-        Decode VINs with the public NHTSA vPIC API, expose more vehicle specifics, and generate OEM-style lookup routes. For an exact parts list, the page also supports a local catalog JSON/CSV that you can host on GitHub Pages.
-      </p>
-    </div>
+<div class="wrap">
 
-    <div class="grid">
-      <div class="card split">
-        <div class="stack">
-          <label for="vinInput">Single VIN</label>
-          <div class="input-row">
-            <input id="vinInput" type="text" maxlength="17" placeholder="Enter 17-character VIN" autocomplete="off" />
-            <button class="primary" id="decodeBtn" type="button">Decode VIN</button>
-          </div>
-          <div class="btns">
-            <button class="soft" id="sampleBtn" type="button">Load sample VIN</button>
-            <button class="ghost" id="clearBtn" type="button">Clear</button>
-          </div>
-          <div id="singleStatus" class="status">NHTSA vPIC returns basic VIN decoding fields and batch decoding support.</div>
-        </div>
+<!-- Header -->
+<div style="margin-bottom:16px">
+  <h1>🔧 VIN Parts Finder</h1>
+  <p class="sub">Decode any VIN → full OEM parts list → aftermarket alternatives &nbsp;·&nbsp; <button class="toggle-link" onclick="toggleSettings()">API settings</button></p>
+</div>
 
-        <div class="stack">
-          <label for="vinList">Batch VINs</label>
-          <textarea id="vinList" placeholder="Paste one VIN per line for batch decoding"></textarea>
-          <div class="btns">
-            <button class="primary" id="batchBtn" type="button">Decode batch</button>
-            <button class="soft" id="copyBtn" type="button">Copy JSON</button>
-          </div>
-          <div id="batchStatus" class="status"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="split" style="grid-template-columns: 1fr 1fr;">
-          <div class="stack">
-            <label for="catalogFile">Optional local parts catalog</label>
-            <input id="catalogFile" type="file" accept=".json,.csv" />
-            <div class="btns">
-              <button class="soft" id="loadDemoCatalog" type="button">Load demo catalog</button>
-              <button class="ghost" id="clearCatalog" type="button">Clear catalog</button>
-            </div>
-            <div class="small">Upload your own CSV/JSON of parts to show an exact filtered list instead of search links.</div>
-          </div>
-          <div class="stack">
-            <label for="partSearch">Filter parts</label>
-            <input id="partSearch" type="text" placeholder="Search parts by name, category, manufacturer" />
-            <div class="small">This filters the loaded catalog rows after VIN decoding.</div>
-          </div>
-        </div>
-      </div>
-
-      <div id="results" class="card results">
-        <div class="vehicle-head">
-          <div>
-            <h2 class="vehicle-title" id="vehicleName"></h2>
-            <p class="vehicle-subtitle" id="vehicleDetails"></p>
-          </div>
-          <div class="chips" id="vehicleChips"></div>
-        </div>
-
-        <h3 class="section-title">Decoded specs</h3>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Value</th>
-                <th>Field</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody id="specTable"></tbody>
-          </table>
-        </div>
-
-        <div style="height:16px"></div>
-
-        <h3 class="section-title">Parts output</h3>
-        <div id="catalogResults" class="table-wrap" style="display:none; margin-bottom: 16px;">
-          <table>
-            <thead>
-              <tr>
-                <th>Part Name</th>
-                <th>Category</th>
-                <th>Manufacturer</th>
-                <th>Manufacturer Part Number</th>
-                <th>Description</th>
-                <th>UPC</th>
-                <th>Compatible with</th>
-              </tr>
-            </thead>
-            <tbody id="catalogTable"></tbody>
-          </table>
-        </div>
-
-        <div id="searchLinksSection">
-          <div class="section-title">OEM / parts search shortcuts</div>
-          <div class="parts-grid" id="partsLinks"></div>
-        </div>
-
-        <p class="footer-note">
-          NHTSA vPIC is a VIN-decoding source, not a complete OEM parts catalog. It can give you vehicle basics and many additional characteristics, but exact part-number inventories require a catalog source or your own parts database. That is why the page supports a local catalog file. ([nhtsa.gov](https://www.nhtsa.gov/cars/rules/manufacture?utm_source=chatgpt.com))
-        </p>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">How it works</h3>
-        <div class="small">
-          1) VIN is decoded through the public NHTSA API.<br />
-          2) More than just year/make/model is shown when the API returns it.<br />
-          3) If you load a local catalog, the page can filter exact parts rows by vehicle and keyword.<br />
-          4) If no catalog is loaded, the page creates OEM/search shortcuts instead of pretending to know every part.
-        </div>
-      </div>
+<!-- API Key Card -->
+<div class="card" id="settings-card" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span style="font-size:13px;font-weight:600;color:#8b949e">⚙️ Gemini API Key</span>
+    <button class="toggle-link" onclick="toggleSettings()">close</button>
+  </div>
+  <div class="row-flex" style="margin-bottom:8px">
+    <input type="password" id="api-key-input" placeholder="Paste key from aistudio.google.com (free)" style="flex:1;min-width:180px" />
+    <button class="btn btn-ghost btn-sm" onclick="saveKey()">Save</button>
+    <button class="btn btn-ghost btn-sm" onclick="clearKey()">Clear</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div id="key-status" style="font-size:11px"></div>
+    <div style="display:flex;align-items:center;gap:7px">
+      <span style="font-size:11px;color:#484f58">Model:</span>
+      <select id="model-select" class="model-select">
+        <option value="gemini-1.5-flash">gemini-1.5-flash (free)</option>
+        <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp (free)</option>
+        <option value="gemini-1.5-pro">gemini-1.5-pro (paid)</option>
+      </select>
     </div>
   </div>
+  <div style="font-size:11px;color:#484f58;margin-top:8px">
+    Free tier: 15 req/min · 1,500 req/day · Key stored locally in your browser only.
+  </div>
+</div>
 
-  <script>
-    const NHTSA_ENDPOINT = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended';
+<!-- VIN Input -->
+<div class="card">
+  <div class="row-flex">
+    <input class="vin-in" type="text" id="vin-input" maxlength="17"
+      placeholder="Enter 17-character VIN…" style="flex:1;min-width:200px"
+      oninput="onVinInput()" onkeydown="if(event.key==='Enter')run()" />
+    <button class="btn btn-green" id="run-btn" onclick="run()" disabled>🔍 Get Parts List</button>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="vin-bar" style="width:0%;background:#1f6feb"></div>
+  </div>
+  <div id="error-box" class="error-box"></div>
+</div>
 
-    const CATEGORY_MAP = {
-      ford: [
-        ['Motorcraft Oil Filter', 'oil filter'],
-        ['Motorcraft Air Filter', 'air filter'],
-        ['Brake Pads', 'brake pads'],
-        ['Brake Rotors', 'brake rotors'],
-        ['Spark Plugs', 'spark plugs'],
-        ['Battery', 'battery'],
-        ['Alternator', 'alternator'],
-        ['Serpentine Belt', 'serpentine belt'],
-        ['Water Pump', 'water pump'],
-        ['Radiator', 'radiator'],
-        ['Headlight Bulb', 'headlight bulb'],
-        ['Wiper Blades', 'wiper blades']
-      ],
-      nissan: [
-        ['Oil Filter', 'oil filter'],
-        ['Air Filter', 'air filter'],
-        ['Brake Pads', 'brake pads'],
-        ['Brake Rotors', 'brake rotors'],
-        ['Spark Plugs', 'spark plugs'],
-        ['Battery', 'battery'],
-        ['Alternator', 'alternator'],
-        ['Serpentine Belt', 'serpentine belt'],
-        ['Water Pump', 'water pump'],
-        ['Radiator', 'radiator'],
-        ['Headlight Bulb', 'headlight bulb'],
-        ['Wiper Blades', 'wiper blades']
-      ],
-      chevrolet: [
-        ['Oil Filter', 'oil filter'],
-        ['Air Filter', 'air filter'],
-        ['Brake Pads', 'brake pads'],
-        ['Brake Rotors', 'brake rotors'],
-        ['Spark Plugs', 'spark plugs'],
-        ['Battery', 'battery'],
-        ['Alternator', 'alternator'],
-        ['Serpentine Belt', 'serpentine belt'],
-        ['Water Pump', 'water pump'],
-        ['Radiator', 'radiator'],
-        ['Headlight Bulb', 'headlight bulb'],
-        ['Wiper Blades', 'wiper blades']
-      ],
-      default: [
-        ['Oil Filter', 'oil filter'],
-        ['Air Filter', 'air filter'],
-        ['Brake Pads', 'brake pads'],
-        ['Brake Rotors', 'brake rotors'],
-        ['Spark Plugs', 'spark plugs'],
-        ['Battery', 'battery'],
-        ['Alternator', 'alternator'],
-        ['Serpentine Belt', 'serpentine belt'],
-        ['Water Pump', 'water pump'],
-        ['Radiator', 'radiator'],
-        ['Headlight Bulb', 'headlight bulb'],
-        ['Wiper Blades', 'wiper blades']
-      ]
+<!-- Vehicle Info -->
+<div class="card" id="vehicle-card" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+    <div>
+      <div id="vehicle-title" style="font-size:19px;font-weight:700;letter-spacing:-.01em"></div>
+      <div id="vehicle-vin" style="font-family:monospace;font-size:11px;color:#484f58;margin-top:2px;letter-spacing:1px"></div>
+    </div>
+    <button class="btn btn-sm" id="alt-btn" onclick="toggleAlt()"
+      style="display:none;background:#1c2f1e;color:#3fb950;border:1px solid #238636">
+      🔄 Show Aftermarket Alternatives
+    </button>
+  </div>
+  <div class="info-grid" id="vehicle-specs"></div>
+</div>
+
+<!-- Filters + Search -->
+<div id="filter-bar" style="display:none;margin-bottom:14px">
+  <div class="chips" id="cat-chips"></div>
+  <input type="text" id="search-input" placeholder="Search parts or part numbers…"
+    style="font-size:13px;padding:9px 13px" oninput="renderParts()" />
+</div>
+
+<!-- Parts output -->
+<div id="parts-output"></div>
+
+<!-- Empty state -->
+<div class="empty-state" id="empty-state">
+  <div class="empty-icon">🔩</div>
+  <div class="empty-title">Enter a VIN to get started</div>
+  <div class="sub">Found on driver's side dash, door jamb sticker, or insurance/title documents</div>
+</div>
+
+<!-- Footer -->
+<div class="footer-note" id="footer-note">
+  ℹ️ Vehicle data from <strong>NHTSA vPIC API</strong> (free, no key needed). Parts list &amp; alternatives are
+  <strong>AI-generated</strong> by Google Gemini from vehicle specs — use as a reference guide.
+  For verified OEM catalog data, integrate with TecDoc, Epicor, or Mitchell1.
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ────────────────────────────────────────────────────────────── State
+let parts=[], altMap={}, showAlt=false, altLoaded=false, activeCat='All', vehicleInfo=null;
+
+const CATS={
+  Engine:'#f87171',Transmission:'#fb923c',Brakes:'#facc15',Suspension:'#4ade80',
+  Steering:'#34d399',Electrical:'#60a5fa',Cooling:'#38bdf8','Fuel System':'#f59e0b',
+  Exhaust:'#a8a29e',HVAC:'#22d3ee',Body:'#a78bfa',Interior:'#f472b6',Other:'#6b7280'
+};
+const ICONS={
+  Engine:'⚙️',Transmission:'🔄',Brakes:'🛑',Suspension:'🔩',Steering:'🎯',
+  Electrical:'⚡',Cooling:'🌡️','Fuel System':'⛽',Exhaust:'💨',HVAC:'❄️',
+  Body:'🚘',Interior:'💺',Other:'🔧'
+};
+
+// ────────────────────────────────────────────────────────────── Settings
+function toggleSettings(){
+  const c=document.getElementById('settings-card');
+  c.style.display=c.style.display==='none'?'block':'none';
+}
+function getKey(){return localStorage.getItem('gemini_key')||''}
+function getModel(){return document.getElementById('model-select').value}
+function saveKey(){
+  const k=document.getElementById('api-key-input').value.trim();
+  if(!k){setKeyStatus('⚠️ No key entered.','#f85149');return}
+  localStorage.setItem('gemini_key',k);
+  setKeyStatus('✓ Key saved.','#3fb950');
+  document.getElementById('api-key-input').value='';
+}
+function clearKey(){
+  localStorage.removeItem('gemini_key');
+  document.getElementById('api-key-input').value='';
+  setKeyStatus('Key cleared.','#8b949e');
+}
+function setKeyStatus(m,c){
+  const el=document.getElementById('key-status');
+  el.textContent=m; el.style.color=c;
+}
+window.addEventListener('load',()=>{
+  if(getKey()) setKeyStatus('✓ API key saved.','#3fb950');
+});
+
+// ────────────────────────────────────────────────────────────── VIN input
+function onVinInput(){
+  const inp=document.getElementById('vin-input');
+  inp.value=inp.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'');
+  const len=inp.value.length;
+  const bar=document.getElementById('vin-bar');
+  bar.style.width=(len/17*100)+'%';
+  bar.style.background=len===17?'#3fb950':'#1f6feb';
+  document.getElementById('run-btn').disabled=len!==17;
+}
+
+// ────────────────────────────────────────────────────────────── Error
+function showError(msg){
+  const el=document.getElementById('error-box');
+  el.textContent='⚠️ '+msg; el.style.display='block';
+}
+function clearError(){document.getElementById('error-box').style.display='none'}
+
+// ────────────────────────────────────────────────────────────── Gemini
+async function callGemini(prompt,maxTokens=8192){
+  const key=getKey();
+  if(!key) throw new Error('No API key saved. Click "API settings" above, paste your free key from aistudio.google.com, and click Save.');
+  const model=getModel();
+  const res=await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+    {method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({
+       contents:[{parts:[{text:prompt}]}],
+       generationConfig:{temperature:0.1,maxOutputTokens:maxTokens}
+     })}
+  );
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message);
+  const text=data.candidates?.[0]?.content?.parts?.[0]?.text??'';
+  try{return JSON.parse(text.replace(/```json\n?|```\n?/g,'').trim())}
+  catch{throw new Error('AI returned unexpected format. Try again.')}
+}
+
+// ────────────────────────────────────────────────────────────── Main Run
+async function run(){
+  const vin=document.getElementById('vin-input').value.trim();
+  if(vin.length!==17) return;
+  clearError();
+  parts=[]; altMap={}; showAlt=false; altLoaded=false; activeCat='All';
+  document.getElementById('vehicle-card').style.display='none';
+  document.getElementById('filter-bar').style.display='none';
+  document.getElementById('parts-output').innerHTML='';
+  document.getElementById('footer-note').style.display='none';
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('alt-btn').style.display='none';
+
+  const runBtn=document.getElementById('run-btn');
+  const setBtn=(t)=>{runBtn.textContent=t;runBtn.disabled=true};
+  setBtn('⏳ Decoding VIN…');
+
+  try{
+    // NHTSA decode
+    const r=await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`);
+    const d=await r.json();
+    const v=d.Results?.[0];
+    if(!v?.Make) throw new Error('VIN not found in NHTSA database. Check the VIN and try again.');
+
+    const engParts=[
+      v.DisplacementL?parseFloat(v.DisplacementL).toFixed(1)+'L':null,
+      v.EngineCylinders?`V${v.EngineCylinders}`:null,
+      v.FuelTypePrimary||null
+    ].filter(Boolean);
+
+    vehicleInfo={
+      make:v.Make,model:v.Model,year:v.ModelYear,trim:v.Trim,
+      engine:engParts.join(' ')||v.EngineModel||'',
+      drive:v.DriveType||'',body:v.BodyClass||'',
+      trans:v.TransmissionStyle||'',vin
     };
 
-    const OEM_LINKS = {
-      ford: 'https://parts.ford.com/',
-      nissan: 'https://www.nissanusa.com/parts-accessories.html',
-      chevrolet: 'https://parts.chevrolet.com/',
-      default: 'https://www.rockauto.com/'
-    };
+    // Render vehicle card
+    document.getElementById('vehicle-title').innerHTML=
+      `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`+
+      (vehicleInfo.trim?` <span style="color:#8b949e;font-weight:400;font-size:14px">${vehicleInfo.trim}</span>`:'');
+    document.getElementById('vehicle-vin').textContent=vin;
+    document.getElementById('vehicle-specs').innerHTML=
+      [['Engine',vehicleInfo.engine],['Drive Type',vehicleInfo.drive],
+       ['Body Style',vehicleInfo.body],['Transmission',vehicleInfo.trans]]
+      .filter(([,val])=>val)
+      .map(([l,val])=>`<div class="info-cell"><div class="info-label">${l}</div><div class="info-value">${val}</div></div>`)
+      .join('');
+    document.getElementById('vehicle-card').style.display='block';
 
-    const SPEC_KEYS = [
-      'Model Year', 'Make', 'Model', 'Trim', 'Series', 'Body Class', 'Drive Type',
-      'Engine Model', 'Displacement (L)', 'Engine Number of Cylinders', 'Fuel Type - Primary',
-      'Transmission Style', 'Transmission Speeds', 'Wheel Base (inches)', 'GVWR', 'Plant City',
-      'Plant State', 'Plant Country', 'Vehicle Type', 'Brake System Type', 'Steering Location'
-    ];
+    // Gemini parts
+    setBtn('⚙️ Building Parts List…');
+    const partsData=await callGemini(
+`You are an OEM automotive parts database. Generate exactly 55 realistic replacement parts for this vehicle.
 
-    const $ = (id) => document.getElementById(id);
+Vehicle: ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}${vehicleInfo.trim?` (${vehicleInfo.trim})`:''}
+Engine: ${vehicleInfo.engine||'N/A'} | Drive: ${vehicleInfo.drive||'N/A'} | Body: ${vehicleInfo.body||'N/A'} | Trans: ${vehicleInfo.trans||'N/A'}
 
-    let loadedCatalog = [];
-    let lastDecodedVehicle = null;
+Return ONLY a raw JSON object — no markdown fences, no preamble:
+{"parts":[{"name":"Engine Air Filter","oem_number":"17220-5G0-A00","category":"Engine","description":"Primary intake air filter"}]}
 
-    function cleanVin(raw) {
-      return String(raw || '').trim().toUpperCase().replace(/\s+/g, '');
-    }
+Rules:
+• Cover ALL categories: Engine, Transmission, Brakes, Suspension, Steering, Electrical, Cooling, Fuel System, Exhaust, HVAC, Body, Interior
+• 4-6 parts per category
+• Use realistic ${vehicleInfo.make}-style OEM part number formats:
+  Honda→17220-5G0-A00, Toyota→90915-YZZD3, Ford→FR3Z-6714-B, GM/Chevy→25182496,
+  Dodge/Chrysler→04884899AB, BMW→11-42-7-566-327, Mercedes→000-180-24-09, Nissan→16546-JA10B,
+  Hyundai/Kia→26300-35505, Subaru→15208AA160, Mazda→SH01-14-302
+• Match parts exactly to this vehicle's engine and drivetrain`
+    );
 
-    function isValidVin(vin) {
-      return /^[A-HJ-NPR-Z0-9]{17}$/.test(vin);
-    }
+    parts=partsData.parts??[];
+    if(!parts.length) throw new Error('No parts returned. Please try again.');
 
-    function normalize(s) {
-      return String(s || '').toLowerCase().trim();
-    }
+    renderCatChips();
+    renderParts();
+    document.getElementById('filter-bar').style.display='block';
+    document.getElementById('footer-note').style.display='block';
+    document.getElementById('alt-btn').style.display='inline-block';
 
-    function getVehicleKey(make) {
-      const m = normalize(make);
-      if (m.includes('ford')) return 'ford';
-      if (m.includes('nissan')) return 'nissan';
-      if (m.includes('chevrolet') || m.includes('chevy') || m.includes('gm')) return 'chevrolet';
-      return 'default';
-    }
+  }catch(e){
+    showError(e.message||'Unexpected error. Please try again.');
+    document.getElementById('empty-state').style.display='block';
+  }finally{
+    setBtn('🔍 Get Parts List');
+    document.getElementById('run-btn').disabled=
+      document.getElementById('vin-input').value.length!==17;
+  }
+}
 
-    function getDecodedValue(results, key) {
-      const row = results.find((r) => r.Variable === key);
-      return row && row.Value && String(row.Value).trim() !== 'Not Applicable' ? String(row.Value).trim() : '';
-    }
+// ────────────────────────────────────────────────────────────── Category chips
+function groupBy(arr,fn){return arr.reduce((a,x)=>{(a[fn(x)]??=[]).push(x);return a},{})}
 
-    async function decodeVin(vin) {
-      const url = `${NHTSA_ENDPOINT}/${encodeURIComponent(vin)}?format=json`;
-      const response = await fetch(url, { cache: 'no-store' });
-      if (!response.ok) throw new Error(`VIN lookup failed (${response.status})`);
-      const data = await response.json();
-      if (!data || !Array.isArray(data.Results)) throw new Error('Unexpected VIN decode response');
-      return data.Results;
-    }
+function renderCatChips(){
+  const grp=groupBy(parts,p=>p.category);
+  const cats=['All',...Object.keys(grp).sort()];
+  document.getElementById('cat-chips').innerHTML=cats.map(c=>{
+    const color=c==='All'?'#58a6ff':(CATS[c]||'#6b7280');
+    const count=c==='All'?parts.length:(grp[c]?.length??0);
+    const label=c==='All'?`All (${count})`:`${ICONS[c]||'🔧'} ${c} (${count})`;
+    const act=activeCat===c;
+    return `<button class="chip" style="color:${act?color:'#8b949e'};border-color:${act?color:'#30363d'};background:${act?color+'22':'#161b22'}" onclick="setCat('${c}')">${label}</button>`;
+  }).join('');
+}
 
-    function buildSpecRows(results) {
-      const rows = [];
-      for (let i = 0; i < SPEC_KEYS.length; i += 2) {
-        const a = SPEC_KEYS[i];
-        const b = SPEC_KEYS[i + 1];
-        rows.push([
-          a, getDecodedValue(results, a) || '—',
-          b, getDecodedValue(results, b) || '—'
-        ]);
+function setCat(c){activeCat=c;renderCatChips();renderParts()}
+
+// ────────────────────────────────────────────────────────────── Render parts
+function renderParts(){
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const filtered=parts.filter(p=>{
+    const catOk=activeCat==='All'||p.category===activeCat;
+    const srchOk=!q||p.name.toLowerCase().includes(q)||p.oem_number.toLowerCase().includes(q);
+    return catOk&&srchOk;
+  });
+  const grp=groupBy(filtered,p=>p.category);
+  const out=document.getElementById('parts-output');
+
+  if(!filtered.length){
+    out.innerHTML=`<div style="text-align:center;padding:30px;color:#8b949e;font-size:13px">No parts match.
+      <button onclick="document.getElementById('search-input').value='';renderParts()"
+        style="background:none;border:none;color:#58a6ff;cursor:pointer;font-size:13px">Clear search</button></div>`;
+    return;
+  }
+
+  out.innerHTML=Object.entries(grp).sort(([a],[b])=>a.localeCompare(b)).map(([cat,catParts])=>{
+    const color=CATS[cat]||'#6b7280';
+    const icon=ICONS[cat]||'🔧';
+    const altHeader=showAlt?'<th>Aftermarket Alternatives</th>':'<th class="hide-sm">Description</th>';
+    const rows=catParts.map((p,i)=>{
+      let altCell;
+      if(showAlt){
+        const alts=altMap[p.oem_number];
+        altCell=altLoaded
+          ?(alts?.length
+            ?`<td>${alts.map(a=>`<span class="alt-tag"><span class="alt-brand">${a.brand}</span><span style="color:#30363d">·</span><span class="alt-num">${a.part_number}</span></span>`).join('')}</td>`
+            :'<td><span style="color:#484f58;font-size:12px">—</span></td>')
+          :'<td><span style="color:#484f58;font-size:12px">Loading…</span></td>';
+      }else{
+        altCell=`<td class="hide-sm" style="color:#8b949e;font-size:12px">${p.description||''}</td>`;
       }
-      return rows;
-    }
+      return `<tr style="border-top:${i>0?'1px solid #21262d':'none'};background:${i%2?'#0d111708':'transparent'}">
+        <td style="font-weight:500">${p.name}</td>
+        <td><code class="part-num">${p.oem_number}</code></td>
+        ${altCell}</tr>`;
+    }).join('');
 
-    function renderSpecTable(results) {
-      const tbody = $('specTable');
-      tbody.innerHTML = '';
-      buildSpecRows(results).forEach((row) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${row[0]}</strong></td>
-          <td>${row[1]}</td>
-          <td><strong>${row[2]}</strong></td>
-          <td>${row[3]}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+    return `<div class="cat-header" style="color:${color}">
+      <div class="cat-dot" style="background:${color}"></div>
+      ${icon} ${cat} <span class="cat-count">— ${catParts.length} parts</span>
+    </div>
+    <div class="table-wrap">
+      <table class="parts-table">
+        <thead><tr><th>Part Name</th><th>OEM Part #</th>${altHeader}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }).join('');
+}
 
-    function getPartSearchUrl(make, year, model, query) {
-      const key = getVehicleKey(make);
-      const vehicleQuery = [year, make, model, query].filter(Boolean).join(' ');
-      if (key === 'ford') return `https://parts.ford.com/shop/en/us/search?searchTerm=${encodeURIComponent(vehicleQuery)}`;
-      if (key === 'nissan') return `https://www.nissanusa.com/parts-accessories.html?search=${encodeURIComponent(vehicleQuery)}`;
-      if (key === 'chevrolet') return `https://parts.chevrolet.com/search?searchTerm=${encodeURIComponent(vehicleQuery)}`;
-      return `https://www.google.com/search?q=${encodeURIComponent(vehicleQuery + ' parts')}`;
-    }
+// ────────────────────────────────────────────────────────────── Alternatives
+async function toggleAlt(){
+  const btn=document.getElementById('alt-btn');
+  if(showAlt){
+    showAlt=false;
+    btn.style.cssText='display:inline-block;background:#1c2f1e;color:#3fb950;border:1px solid #238636;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer';
+    btn.textContent='🔄 Show Aftermarket Alternatives';
+    renderParts();
+    return;
+  }
+  showAlt=true;
+  btn.style.cssText='display:inline-block;background:#1f3a5f;color:#58a6ff;border:1px solid #1f6feb;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer';
+  btn.textContent='📋 Hide Alternatives';
+  renderParts();
+  if(altLoaded) return;
 
-    function renderSearchLinks(results, vin) {
-      const year = getDecodedValue(results, 'Model Year');
-      const make = getDecodedValue(results, 'Make');
-      const model = getDecodedValue(results, 'Model');
-      const key = getVehicleKey(make);
-      const categories = CATEGORY_MAP[key] || CATEGORY_MAP.default;
+  btn.textContent='⏳ Loading Alternatives…';
+  btn.disabled=true;
+  try{
+    const list=parts.map(p=>`${p.oem_number}|${p.name}|${p.category}`).join('\n');
+    const data=await callGemini(
+`For each OEM part below for a ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}, list 2–3 aftermarket alternatives.
 
-      const links = $('partsLinks');
-      links.innerHTML = '';
+${list}
 
-      categories.forEach(([label, query]) => {
-        const a = document.createElement('a');
-        a.className = 'part-card';
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.href = getPartSearchUrl(make, year, model, query);
-        a.innerHTML = `
-          <div class="part-name">${label}</div>
-          <div class="part-meta">${make || 'Vehicle'} • ${year || ''} ${model || ''}</div>
-        `;
-        links.appendChild(a);
-      });
+Return ONLY raw JSON (no markdown):
+{"alternatives":{"OEM_PART_NUMBER":[{"brand":"FRAM","part_number":"PH3600"},{"brand":"Bosch","part_number":"3330"}]}}
 
-      const oem = document.createElement('a');
-      oem.className = 'part-card';
-      oem.target = '_blank';
-      oem.rel = 'noopener noreferrer';
-      oem.href = OEM_LINKS[key] || OEM_LINKS.default;
-      oem.style.background = '#eff6ff';
-      oem.innerHTML = `
-        <div class="part-name">OEM Catalog</div>
-        <div class="part-meta">Open the official catalog or search portal</div>
-      `;
-      links.appendChild(oem);
-    }
-
-    function renderVehicle(results, vin) {
-      const year = getDecodedValue(results, 'Model Year');
-      const make = getDecodedValue(results, 'Make');
-      const model = getDecodedValue(results, 'Model');
-      const trim = getDecodedValue(results, 'Trim');
-      const engine = getDecodedValue(results, 'Engine Model') || getDecodedValue(results, 'Displacement (L)') || getDecodedValue(results, 'Engine Number of Cylinders');
-      const fuel = getDecodedValue(results, 'Fuel Type - Primary');
-      const body = getDecodedValue(results, 'Body Class');
-      const drive = getDecodedValue(results, 'Drive Type');
-      const trans = getDecodedValue(results, 'Transmission Style');
-      const transSpeeds = getDecodedValue(results, 'Transmission Speeds');
-      const wheelBase = getDecodedValue(results, 'Wheel Base (inches)');
-      const gvwr = getDecodedValue(results, 'GVWR');
-      const plant = [getDecodedValue(results, 'Plant City'), getDecodedValue(results, 'Plant State'), getDecodedValue(results, 'Plant Country')].filter(Boolean).join(', ');
-      const brake = getDecodedValue(results, 'Brake System Type');
-      const steering = getDecodedValue(results, 'Steering Location');
-      const vehicleType = getDecodedValue(results, 'Vehicle Type');
-      const series = getDecodedValue(results, 'Series');
-
-      const title = [year, make, model].filter(Boolean).join(' ');
-      $('vehicleName').textContent = title || 'Decoded Vehicle';
-      $('vehicleDetails').textContent = [vin, trim ? `Trim: ${trim}` : null, series ? `Series: ${series}` : null].filter(Boolean).join(' | ');
-
-      const chips = $('vehicleChips');
-      chips.innerHTML = '';
-      [year, make, model, body, drive].filter(Boolean).slice(0, 5).forEach((item) => {
-        const el = document.createElement('span');
-        el.className = 'chip';
-        el.textContent = item;
-        chips.appendChild(el);
-      });
-
-      const tableData = {
-        'Model Year': year, Make: make, Model: model, Trim: trim, Series: series,
-        'Body Class': body, 'Vehicle Type': vehicleType, 'Drive Type': drive,
-        'Engine': engine, 'Fuel': fuel, 'Transmission': trans, 'Trans Speeds': transSpeeds,
-        'Wheel Base': wheelBase, GVWR: gvwr, 'Brake System': brake, 'Steering': steering, Plant: plant
-      };
-      window.__currentVehicle = tableData;
-
-      renderSpecTable(results);
-      renderSearchLinks(results, vin);
-
-      const resultsBox = $('results');
-      resultsBox.style.display = 'block';
-      lastDecodedVehicle = { results, vin, tableData };
-    }
-
-    function renderCatalogRows(rows) {
-      const filtered = applyCatalogFilter(rows);
-      const table = $('catalogTable');
-      table.innerHTML = '';
-      filtered.forEach((r) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${escapeHtml(r['Part Name'] || '')}</td>
-          <td>${escapeHtml(r['Category'] || '')}</td>
-          <td>${escapeHtml(r['Manufacturer'] || '')}</td>
-          <td>${escapeHtml(r['Manufacturer Part Number'] || '')}</td>
-          <td>${escapeHtml(r['Description'] || '')}</td>
-          <td>${escapeHtml(r['UPC'] || '')}</td>
-          <td>${escapeHtml(r['Compatible with'] || '')}</td>
-        `;
-        table.appendChild(tr);
-      });
-      $('catalogResults').style.display = filtered.length ? 'block' : 'none';
-      return filtered.length;
-    }
-
-    function escapeHtml(v) {
-      return String(v ?? '').replace(/[&<>"]+/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m] || m));
-    }
-
-    function applyCatalogFilter(rows) {
-      const term = normalize($('partSearch').value);
-      const vehicle = window.__currentVehicle || {};
-      const make = normalize(vehicle['Make']);
-      const model = normalize(vehicle['Model']);
-      const year = normalize(vehicle['Model Year']);
-
-      return rows.filter((r) => {
-        const compatible = normalize(r['Compatible with']);
-        const hay = normalize([r['Part Name'], r['Category'], r['Manufacturer'], r['Manufacturer Part Number'], r['Description'], r['UPC']].join(' '));
-        const termOk = !term || hay.includes(term) || compatible.includes(term);
-        const vehOk = !year || !compatible || compatible.includes(year) || compatible.includes(make) || compatible.includes(model);
-        return termOk && vehOk;
-      });
-    }
-
-    async function handleSingleDecode() {
-      const vin = cleanVin($('vinInput').value);
-      const status = $('singleStatus');
-      const btn = $('decodeBtn');
-
-      $('results').style.display = 'none';
-      status.className = 'status';
-      status.textContent = 'Decoding...';
-
-      if (!isValidVin(vin)) {
-        status.className = 'status error';
-        status.textContent = 'Enter a valid 17-character VIN. Letters I, O, and Q are not allowed.';
-        return;
-      }
-
-      btn.disabled = true;
-      try {
-        const results = await decodeVin(vin);
-        renderVehicle(results, vin);
-        status.className = 'status success';
-        status.textContent = 'VIN decoded successfully.';
-      } catch (err) {
-        status.className = 'status error';
-        status.textContent = err && err.message ? err.message : 'VIN decode failed.';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    async function handleBatchDecode() {
-      const raw = $('vinList').value || '';
-      const vins = raw.split(/\r?\n/).map(cleanVin).filter(Boolean);
-      const valid = [...new Set(vins.filter(isValidVin))];
-      const status = $('batchStatus');
-      const btn = $('batchBtn');
-
-      if (!valid.length) {
-        status.className = 'status error';
-        status.textContent = 'Paste one or more valid VINs, one per line.';
-        return;
-      }
-
-      btn.disabled = true;
-      status.className = 'status';
-      status.textContent = `Decoding ${valid.length} VIN${valid.length > 1 ? 's' : ''}...`;
-
-      const out = [];
-      for (const vin of valid) {
-        try {
-          const results = await decodeVin(vin);
-          out.push({
-            vin,
-            'Model Year': getDecodedValue(results, 'Model Year'),
-            Make: getDecodedValue(results, 'Make'),
-            Model: getDecodedValue(results, 'Model'),
-            Trim: getDecodedValue(results, 'Trim'),
-            Series: getDecodedValue(results, 'Series'),
-            'Body Class': getDecodedValue(results, 'Body Class'),
-            'Drive Type': getDecodedValue(results, 'Drive Type'),
-            'Engine Model': getDecodedValue(results, 'Engine Model'),
-            'Fuel Type - Primary': getDecodedValue(results, 'Fuel Type - Primary'),
-            'Transmission Style': getDecodedValue(results, 'Transmission Style')
-          });
-        } catch (err) {
-          out.push({ vin, error: err.message || 'Decode failed' });
-        }
-      }
-
-      window.__vinBatchResult = out;
-      status.className = 'status success';
-      status.textContent = `Finished decoding ${out.length} VIN${out.length > 1 ? 's' : ''}.`;
-      btn.disabled = false;
-    }
-
-    async function copyBatchJson() {
-      const status = $('batchStatus');
-      const data = window.__vinBatchResult;
-      if (!data || !data.length) {
-        status.className = 'status error';
-        status.textContent = 'No batch results yet. Run Decode batch first.';
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-        status.className = 'status success';
-        status.textContent = 'Batch JSON copied to clipboard.';
-      } catch {
-        status.className = 'status error';
-        status.textContent = 'Clipboard access failed in this browser.';
-      }
-    }
-
-    function clearAll() {
-      $('vinInput').value = '';
-      $('vinList').value = '';
-      $('results').style.display = 'none';
-      $('singleStatus').className = 'status';
-      $('singleStatus').textContent = 'NHTSA vPIC returns basic VIN decoding fields and batch decoding support.';
-      $('batchStatus').textContent = '';
-      $('batchStatus').className = 'status';
-      $('catalogResults').style.display = 'none';
-      window.__vinBatchResult = null;
-      window.__currentVehicle = null;
-      lastDecodedVehicle = null;
-    }
-
-    async function handleCatalogFile(file) {
-      const status = $('singleStatus');
-      const text = await file.text();
-      const isJson = file.name.toLowerCase().endsWith('.json');
-      const isCsv = file.name.toLowerCase().endsWith('.csv');
-      let rows = [];
-
-      if (isJson) {
-        const parsed = JSON.parse(text);
-        rows = Array.isArray(parsed) ? parsed : (parsed.rows || []);
-      } else if (isCsv) {
-        rows = parseCsv(text);
-      } else {
-        throw new Error('Unsupported file type');
-      }
-
-      loadedCatalog = rows.map(normalizeCatalogRow).filter(Boolean);
-      status.className = 'status success';
-      status.textContent = `Loaded ${loadedCatalog.length} catalog rows.`;
-      if (lastDecodedVehicle) renderCatalogRows(loadedCatalog);
-    }
-
-    function normalizeCatalogRow(row) {
-      if (!row || typeof row !== 'object') return null;
-      return {
-        'Part Name': row['Part Name'] ?? row.part_name ?? row.name ?? '',
-        'Category': row['Category'] ?? row.category ?? '',
-        'Manufacturer': row['Manufacturer'] ?? row.manufacturer ?? '',
-        'Manufacturer Part Number': row['Manufacturer Part Number'] ?? row.manufacturer_part_number ?? row.mpn ?? '',
-        'Description': row['Description'] ?? row.description ?? '',
-        'UPC': row['UPC'] ?? row.upc ?? '',
-        'Compatible with': row['Compatible with'] ?? row.compatible_with ?? row.fitment ?? ''
-      };
-    }
-
-    function parseCsv(text) {
-      const lines = text.split(/\r?\n/).filter(Boolean);
-      if (!lines.length) return [];
-      const headers = splitCsvLine(lines[0]).map((h) => h.trim());
-      return lines.slice(1).map((line) => {
-        const values = splitCsvLine(line);
-        const obj = {};
-        headers.forEach((h, i) => obj[h] = values[i] ?? '');
-        return obj;
-      });
-    }
-
-    function splitCsvLine(line) {
-      const out = [];
-      let cur = '';
-      let quote = false;
-      for (let i = 0; i < line.length; i++) {
-        const ch = line[i];
-        if (ch === '"') {
-          if (quote && line[i + 1] === '"') { cur += '"'; i++; }
-          else quote = !quote;
-        } else if (ch === ',' && !quote) {
-          out.push(cur);
-          cur = '';
-        } else {
-          cur += ch;
-        }
-      }
-      out.push(cur);
-      return out;
-    }
-
-    function renderDemoCatalog() {
-      loadedCatalog = [
-        {
-          'Part Name': 'Oil Filter',
-          'Category': 'Maintenance',
-          'Manufacturer': 'Motorcraft',
-          'Manufacturer Part Number': 'FL-820-S',
-          'Description': 'Demo row only',
-          'UPC': '000000000000',
-          'Compatible with': 'Ford Expedition, Ford Explorer, Ford E-Series'
-        },
-        {
-          'Part Name': 'Air Filter',
-          'Category': 'Maintenance',
-          'Manufacturer': 'Motorcraft',
-          'Manufacturer Part Number': 'FA-1883',
-          'Description': 'Demo row only',
-          'UPC': '000000000001',
-          'Compatible with': 'Ford Transit, Ford E-Series'
-        },
-        {
-          'Part Name': 'Brake Pads',
-          'Category': 'Brakes',
-          'Manufacturer': 'ACDelco',
-          'Manufacturer Part Number': '17D1234',
-          'Description': 'Demo row only',
-          'UPC': '000000000002',
-          'Compatible with': 'Chevrolet Silverado'
-        }
-      ];
-      $('singleStatus').className = 'status success';
-      $('singleStatus').textContent = 'Demo catalog loaded. Decode a VIN to filter it.';
-      if (lastDecodedVehicle) renderCatalogRows(loadedCatalog);
-    }
-
-    function clearCatalog() {
-      loadedCatalog = [];
-      $('catalogResults').style.display = 'none';
-      $('singleStatus').className = 'status';
-      $('singleStatus').textContent = 'Local catalog cleared.';
-    }
-
-    function refreshCatalogView() {
-      if (!loadedCatalog.length || !lastDecodedVehicle) return;
-      renderCatalogRows(loadedCatalog);
-    }
-
-    $('decodeBtn').addEventListener('click', async () => {
-      await handleSingleDecode();
-      if (loadedCatalog.length && lastDecodedVehicle) renderCatalogRows(loadedCatalog);
-    });
-    $('batchBtn').addEventListener('click', handleBatchDecode);
-    $('copyBtn').addEventListener('click', copyBatchJson);
-    $('clearBtn').addEventListener('click', clearAll);
-    $('sampleBtn').addEventListener('click', () => {
-      $('vinInput').value = '1FMPU14W44LB78565';
-      $('singleStatus').className = 'status';
-      $('singleStatus').textContent = 'Sample VIN loaded. Click Decode VIN.';
-    });
-    $('catalogFile').addEventListener('change', async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      try {
-        await handleCatalogFile(file);
-        if (lastDecodedVehicle) renderCatalogRows(loadedCatalog);
-      } catch (err) {
-        $('singleStatus').className = 'status error';
-        $('singleStatus').textContent = err.message || 'Failed to load catalog file.';
-      }
-    });
-    $('loadDemoCatalog').addEventListener('click', renderDemoCatalog);
-    $('clearCatalog').addEventListener('click', clearCatalog);
-    $('partSearch').addEventListener('input', refreshCatalogView);
-    $('vinInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleSingleDecode();
-    });
-  </script>
+Brand guide:
+Filters→FRAM,K&N,Bosch,Mann,WIX,Purolator | Brakes→Brembo,EBC,Akebono,Hawk,Wagner,StopTech,Raybestos
+Suspension→Monroe,KYB,Bilstein,Moog,Gabriel | Electrical→Denso,Bosch,Delphi,Standard Motor Products,Dorman
+Cooling→Mishimoto,Spectra,Gates,Dorman | Fuel→Walbro,Delphi,Carter,Spectra
+Belts→Gates,Dayco,Continental | Exhaust→Walker,MagnaFlow,AP Exhaust | Steering→Moog,TRW,Cardone,Dorman
+HVAC→Four Seasons,Denso,UAC | Body/Interior→Dorman,Sherman,Replace
+Use realistic part numbers for every brand listed.`,6144);
+    altMap=data.alternatives??{};
+    altLoaded=true;
+  }catch(e){
+    showError('Alternatives failed: '+e.message);
+    showAlt=false;
+  }finally{
+    btn.disabled=false;
+    btn.textContent=showAlt?'📋 Hide Alternatives':'🔄 Show Aftermarket Alternatives';
+    renderParts();
+  }
+}
+</script>
 </body>
 </html>
