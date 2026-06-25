@@ -9,79 +9,100 @@
 body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:16px}
 .wrap{max-width:1100px;margin:0 auto}
 .card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:18px 20px;margin-bottom:14px}
-h1{font-size:22px;color:#58a6ff;font-weight:700;margin-bottom:4px}
-.sub{color:#8b949e;font-size:13px}
+h1{font-size:22px;color:#58a6ff;font-weight:700;margin-bottom:2px}
 input[type=text],input[type=password]{background:#0d1117;border:1px solid #30363d;border-radius:7px;padding:10px 13px;color:#e6edf3;font-size:14px;outline:none;width:100%;font-family:inherit;transition:border .15s}
 input:focus{border-color:#58a6ff}
 .vin-in{font-family:'Courier New',monospace;font-size:16px;letter-spacing:2px}
-.btn{border:none;border-radius:7px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn{border:none;border-radius:7px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-green{background:#238636;color:#fff}
-.btn-blue{background:#1f6feb;color:#fff}
 .btn-ghost{background:#21262d;color:#e6edf3;border:1px solid #30363d}
 .btn-sm{padding:6px 14px;font-size:12px}
 .progress-bar{height:3px;background:#21262d;border-radius:2px;overflow:hidden;margin-top:8px}
 .progress-fill{height:100%;border-radius:2px;transition:width .1s,background .2s}
-.error-box{background:#3d1717;border:1px solid #f85149;border-radius:7px;padding:9px 13px;color:#f85149;font-size:13px;margin-top:10px;display:none}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:14px}
+.error-box{background:#3d1717;border:1px solid #f85149;border-radius:7px;padding:9px 13px;font-size:13px;margin-top:10px;display:none}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:14px}
 .info-cell{background:#0d1117;border-radius:7px;padding:9px 12px}
 .info-label{color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
 .info-value{font-size:12px;font-weight:500}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
 .chip{border-radius:20px;padding:4px 13px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #30363d;background:#161b22;color:#8b949e;transition:all .15s}
-.parts-table{width:100%;border-collapse:collapse;font-size:13px}
-.parts-table th{padding:8px 13px;text-align:left;color:#8b949e;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #30363d;background:#21262d}
-.parts-table td{padding:9px 13px;vertical-align:top}
-.part-num{font-family:'Courier New',monospace;color:#58a6ff;font-size:12px;letter-spacing:.03em}
-.alt-tag{display:inline-flex;align-items:center;gap:5px;background:#1c2128;border:1px solid #30363d;border-radius:5px;padding:2px 8px;font-size:11px;margin:2px}
-.alt-brand{color:#f0883e;font-weight:600}
-.alt-num{font-family:monospace;color:#3fb950}
-.cat-header{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:13px;font-weight:600}
-.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.cat-count{color:#484f58;font-size:11px;font-weight:400}
-.table-wrap{background:#161b22;border:1px solid #30363d;border-radius:9px;overflow:hidden;margin-bottom:14px}
+/* Component cards */
+.comp-card{background:#161b22;border:1px solid #30363d;border-radius:9px;margin-bottom:10px;overflow:hidden}
+.comp-head{padding:9px 14px 8px;background:#1c2128;border-bottom:1px solid #21262d}
+.comp-name{font-size:13px;font-weight:600;color:#e6edf3}
+.comp-desc{font-size:11px;color:#484f58;margin-top:1px}
+.pt{width:100%;border-collapse:collapse}
+.pt td{padding:8px 14px;font-size:12px;vertical-align:middle;border-bottom:1px solid #21262d}
+.pt tr:last-child td{border-bottom:none}
+.oem-tr td{background:#0c1c12}
+.oem-tr td:first-child{border-left:3px solid #3fb950}
+.alt-tr td:first-child{border-left:3px solid transparent}
+.badge{border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.badge-oem{background:#1c3a2e;color:#3fb950;border:1px solid #2a5c3e}
+.badge-alt{background:#1a2433;color:#79c0ff;border:1px solid #1f4070}
+.oem-brand{color:#e6edf3;font-weight:500}
+.alt-brand{color:#c9d1d9}
+.oem-num{font-family:'Courier New',monospace;color:#79c0ff;font-size:11.5px}
+.alt-num{font-family:'Courier New',monospace;color:#56d364;font-size:11.5px}
+.td-badge{width:44px}
+.td-brand{min-width:90px;max-width:160px}
 .row-flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.key-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.key-badge.ok{background:#1c3a2e;color:#3fb950;border:1px solid #238636}
+.key-badge.missing{background:#2d1e0e;color:#f0883e;border:1px solid #7d4e0a}
+.model-sel{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 10px;color:#e6edf3;font-size:12px;cursor:pointer;outline:none}
+.stat-bar{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;padding:10px 14px;background:#161b22;border:1px solid #30363d;border-radius:8px}
+.stat{font-size:12px;color:#8b949e}
+.stat strong{color:#e6edf3}
+.tlink{background:none;border:none;color:#8b949e;font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0}
 .footer-note{margin-top:8px;padding:10px 14px;background:#1c2128;border:1px solid #30363d;border-radius:7px;font-size:11px;color:#8b949e;line-height:1.5;display:none}
-.toggle-link{background:none;border:none;color:#484f58;font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0}
 .empty-state{text-align:center;padding:60px 20px;color:#8b949e}
-.empty-icon{font-size:52px;margin-bottom:16px}
-.empty-title{font-size:16px;font-weight:600;color:#e6edf3;margin-bottom:6px}
-.model-select{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 10px;color:#e6edf3;font-size:12px;cursor:pointer;outline:none}
-@media(max-width:600px){.hide-sm{display:none}body{padding:10px}h1{font-size:19px}}
+.loading-msg{text-align:center;padding:40px 20px;color:#8b949e;font-size:13px}
+@media(max-width:600px){body{padding:10px}h1{font-size:19px}.pt td{padding:7px 10px}.td-brand{max-width:110px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <!-- Header -->
-<div style="margin-bottom:16px">
-  <h1>🔧 VIN Parts Finder</h1>
-  <p class="sub">Decode any VIN → full OEM parts list → aftermarket alternatives &nbsp;·&nbsp; <button class="toggle-link" onclick="toggleSettings()">API settings</button></p>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+  <div>
+    <h1>🔧 VIN Parts Finder</h1>
+    <p style="color:#8b949e;font-size:12px">Full OEM + aftermarket database from a single VIN scan</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;padding-top:4px">
+    <span id="key-badge" class="key-badge missing">⚠ No API key</span>
+    <button class="tlink" onclick="toggleSettings()">⚙ API settings</button>
+  </div>
 </div>
 
-<!-- API Key Card -->
+<!-- Settings card -->
 <div class="card" id="settings-card" style="display:none">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <span style="font-size:13px;font-weight:600;color:#8b949e">⚙️ Gemini API Key</span>
-    <button class="toggle-link" onclick="toggleSettings()">close</button>
+    <span style="font-size:13px;font-weight:600;color:#c9d1d9">Gemini API Key</span>
+    <button class="tlink" onclick="toggleSettings()">close ✕</button>
   </div>
-  <div class="row-flex" style="margin-bottom:8px">
-    <input type="password" id="api-key-input" placeholder="Paste key from aistudio.google.com (free)" style="flex:1;min-width:180px" />
-    <button class="btn btn-ghost btn-sm" onclick="saveKey()">Save</button>
+  <div class="row-flex" style="margin-bottom:10px">
+    <input type="password" id="api-key-input" style="flex:1;min-width:180px"
+      placeholder="Paste key from aistudio.google.com — free, no credit card"
+      oninput="onKeyInput()" onpaste="setTimeout(onKeyInput,10)" />
     <button class="btn btn-ghost btn-sm" onclick="clearKey()">Clear</button>
   </div>
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <div id="key-status" style="font-size:11px"></div>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+    <div id="key-status" style="font-size:11px;color:#8b949e"></div>
     <div style="display:flex;align-items:center;gap:7px">
       <span style="font-size:11px;color:#484f58">Model:</span>
-      <select id="model-select" class="model-select">
+      <select id="model-select" class="model-sel">
         <option value="gemini-2.5-flash">gemini-2.5-flash (free)</option>
         <option value="gemini-2.5-pro">gemini-2.5-pro (paid)</option>
       </select>
     </div>
   </div>
-  <div style="font-size:11px;color:#484f58;margin-top:8px">
-    Free tier: 15 req/min · 1,500 req/day · Key stored locally in your browser only.
+  <div style="background:#1c2128;border:1px solid #30363d;border-radius:7px;padding:10px 13px;font-size:11px;color:#8b949e;line-height:1.7">
+    <strong style="color:#c9d1d9">Get a free key:</strong> aistudio.google.com → Get API key → create/select a project → copy &amp; paste above. Key saves automatically.<br>
+    Free tier: ~10 req/min · 500 req/day &nbsp;·&nbsp; Key stored in your browser only, never sent anywhere except Google.<br>
+    <strong style="color:#f0883e">⚠ Required since June 19 2026:</strong> In Google Cloud Console → Credentials → edit key → restrict to <em>Generative Language API</em> only.
   </div>
 </div>
 
@@ -91,59 +112,47 @@ input:focus{border-color:#58a6ff}
     <input class="vin-in" type="text" id="vin-input" maxlength="17"
       placeholder="Enter 17-character VIN…" style="flex:1;min-width:200px"
       oninput="onVinInput()" onkeydown="if(event.key==='Enter')run()" />
-    <button class="btn btn-green" id="run-btn" onclick="run()" disabled>🔍 Get Parts List</button>
+    <button class="btn btn-green" id="run-btn" onclick="run()" disabled>🔍 Get Full Parts List</button>
   </div>
-  <div class="progress-bar">
-    <div class="progress-fill" id="vin-bar" style="width:0%;background:#1f6feb"></div>
-  </div>
+  <div class="progress-bar"><div class="progress-fill" id="vin-bar" style="width:0%;background:#1f6feb"></div></div>
   <div id="error-box" class="error-box"></div>
 </div>
 
 <!-- Vehicle Info -->
 <div class="card" id="vehicle-card" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
-    <div>
-      <div id="vehicle-title" style="font-size:19px;font-weight:700;letter-spacing:-.01em"></div>
-      <div id="vehicle-vin" style="font-family:monospace;font-size:11px;color:#484f58;margin-top:2px;letter-spacing:1px"></div>
-    </div>
-    <button class="btn btn-sm" id="alt-btn" onclick="toggleAlt()"
-      style="display:none;background:#1c2f1e;color:#3fb950;border:1px solid #238636">
-      🔄 Show Aftermarket Alternatives
-    </button>
-  </div>
-  <div class="info-grid" id="vehicle-specs"></div>
+  <div id="veh-title" style="font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:2px"></div>
+  <div id="veh-vin" style="font-family:monospace;font-size:11px;color:#484f58;letter-spacing:1px;margin-bottom:14px"></div>
+  <div class="info-grid" id="veh-specs"></div>
 </div>
 
-<!-- Filters + Search -->
-<div id="filter-bar" style="display:none;margin-bottom:14px">
+<!-- Filters + search -->
+<div id="filter-bar" style="display:none;margin-bottom:10px">
   <div class="chips" id="cat-chips"></div>
-  <input type="text" id="search-input" placeholder="Search parts or part numbers…"
-    style="font-size:13px;padding:9px 13px" oninput="renderParts()" />
+  <input type="text" id="search-input" style="font-size:13px;padding:9px 13px"
+    placeholder="Search by component name, brand, or part number…" oninput="render()" />
 </div>
 
-<!-- Parts output -->
-<div id="parts-output"></div>
+<!-- Stats -->
+<div class="stat-bar" id="stat-bar" style="display:none"></div>
+
+<!-- Output -->
+<div id="output"></div>
 
 <!-- Empty state -->
 <div class="empty-state" id="empty-state">
-  <div class="empty-icon">🔩</div>
-  <div class="empty-title">Enter a VIN to get started</div>
-  <div class="sub">Found on driver's side dash, door jamb sticker, or insurance/title documents</div>
+  <div style="font-size:52px;margin-bottom:16px">🔩</div>
+  <div style="font-size:16px;font-weight:600;color:#e6edf3;margin-bottom:6px">Enter a VIN to get started</div>
+  <p style="font-size:13px">Found on driver's side dash, door jamb sticker, or title documents</p>
 </div>
 
-<!-- Footer -->
 <div class="footer-note" id="footer-note">
-  ℹ️ Vehicle data from <strong>NHTSA vPIC API</strong> (free, no key needed). Parts list &amp; alternatives are
-  <strong>AI-generated</strong> by Google Gemini from vehicle specs — use as a reference guide.
-  For verified OEM catalog data, integrate with TecDoc, Epicor, or Mitchell1.
+  ℹ️ Vehicle data from <strong>NHTSA vPIC API</strong> (free, no key). All parts are <strong>AI-generated</strong> by Gemini based on vehicle specs — use as a reference guide. For verified OEM data, integrate TecDoc, Epicor, or Mitchell1.
 </div>
 
 </div><!-- /wrap -->
 
 <script>
-// ────────────────────────────────────────────────────────────── State
-let parts=[], altMap={}, showAlt=false, altLoaded=false, activeCat='All', vehicleInfo=null;
-
+// ─── Constants ────────────────────────────────────────────────────────────────
 const CATS={
   Engine:'#f87171',Transmission:'#fb923c',Brakes:'#facc15',Suspension:'#4ade80',
   Steering:'#34d399',Electrical:'#60a5fa',Cooling:'#38bdf8','Fuel System':'#f59e0b',
@@ -155,277 +164,349 @@ const ICONS={
   Body:'🚘',Interior:'💺',Other:'🔧'
 };
 
-// ────────────────────────────────────────────────────────────── Settings
-function toggleSettings(){
-  const c=document.getElementById('settings-card');
-  c.style.display=c.style.display==='none'?'block':'none';
+// ─── State ────────────────────────────────────────────────────────────────────
+let components=[], activeCat='All', saveTimer=null, vehicle=null;
+
+// ─── Key management ───────────────────────────────────────────────────────────
+const KEY_STORE = 'vfinder_gkey';
+function getKey(){ return localStorage.getItem(KEY_STORE)||''; }
+
+function onKeyInput(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    const k = document.getElementById('api-key-input').value.trim();
+    if(k){ localStorage.setItem(KEY_STORE,k); updateBadge(); }
+  }, 500);
 }
-function getKey(){return localStorage.getItem('gemini_key')||''}
-function getModel(){return document.getElementById('model-select').value}
-function saveKey(){
-  const k=document.getElementById('api-key-input').value.trim();
-  if(!k){setKeyStatus('⚠️ No key entered.','#f85149');return}
-  localStorage.setItem('gemini_key',k);
-  setKeyStatus('✓ Key saved.','#3fb950');
-  document.getElementById('api-key-input').value='';
-}
+
 function clearKey(){
-  localStorage.removeItem('gemini_key');
-  document.getElementById('api-key-input').value='';
-  setKeyStatus('Key cleared.','#8b949e');
+  localStorage.removeItem(KEY_STORE);
+  document.getElementById('api-key-input').value = '';
+  document.getElementById('key-status').textContent = 'Key cleared.';
+  updateBadge();
 }
-function setKeyStatus(m,c){
-  const el=document.getElementById('key-status');
-  el.textContent=m; el.style.color=c;
-}
-window.addEventListener('load',()=>{
-  if(getKey()) setKeyStatus('✓ API key saved.','#3fb950');
-});
 
-// ────────────────────────────────────────────────────────────── VIN input
+function updateBadge(){
+  const b = document.getElementById('key-badge');
+  const s = document.getElementById('key-status');
+  if(getKey()){
+    b.className='key-badge ok'; b.textContent='✓ Key saved';
+    s.textContent='✓ Saved automatically'; s.style.color='#3fb950';
+  } else {
+    b.className='key-badge missing'; b.textContent='⚠ No API key';
+    s.textContent='';
+  }
+}
+
+function toggleSettings(){
+  const c = document.getElementById('settings-card');
+  const opening = c.style.display==='none';
+  c.style.display = opening ? 'block' : 'none';
+  if(opening){
+    const inp = document.getElementById('api-key-input');
+    inp.placeholder = getKey()
+      ? '●●●●●●●●●●●●●●●●●● (key saved — paste to replace)'
+      : 'Paste key from aistudio.google.com — free, no credit card';
+  }
+}
+
+// ─── VIN input ─────────────────────────────────────────────────────────────────
 function onVinInput(){
-  const inp=document.getElementById('vin-input');
-  inp.value=inp.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'');
-  const len=inp.value.length;
-  const bar=document.getElementById('vin-bar');
-  bar.style.width=(len/17*100)+'%';
-  bar.style.background=len===17?'#3fb950':'#1f6feb';
-  document.getElementById('run-btn').disabled=len!==17;
+  const inp = document.getElementById('vin-input');
+  inp.value = inp.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'');
+  const n = inp.value.length;
+  const bar = document.getElementById('vin-bar');
+  bar.style.width = (n/17*100)+'%';
+  bar.style.background = n===17 ? '#3fb950' : '#1f6feb';
+  document.getElementById('run-btn').disabled = n!==17;
 }
 
-// ────────────────────────────────────────────────────────────── Error
-function showError(msg){
-  const el=document.getElementById('error-box');
-  el.textContent='⚠️ '+msg; el.style.display='block';
+// ─── Error ─────────────────────────────────────────────────────────────────────
+function showErr(msg){
+  const el = document.getElementById('error-box');
+  el.innerHTML = '⚠️ '+msg; el.style.display='block';
 }
-function clearError(){document.getElementById('error-box').style.display='none'}
+function clearErr(){ document.getElementById('error-box').style.display='none'; }
 
-// ────────────────────────────────────────────────────────────── Gemini
-async function callGemini(prompt,maxTokens=8192){
-  const key=getKey();
-  if(!key) throw new Error('No API key saved. Click "API settings" above, paste your free key from aistudio.google.com, and click Save.');
-  const model=getModel();
-  const res=await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-    {method:'POST',headers:{'Content-Type':'application/json'},
-     body:JSON.stringify({
-       contents:[{parts:[{text:prompt}]}],
-       generationConfig:{temperature:0.1,maxOutputTokens:maxTokens}
-     })}
+// ─── Gemini call ───────────────────────────────────────────────────────────────
+async function callGemini(prompt, maxTok=16384){
+  const key = getKey();
+  if(!key) throw new Error('No API key. Click <strong>⚙ API settings</strong> above and paste your free key from aistudio.google.com.');
+  const model = document.getElementById('model-select').value;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-goog-api-key':key },
+      body: JSON.stringify({
+        contents:[{ parts:[{text:prompt}] }],
+        generationConfig:{ temperature:0.1, maxOutputTokens:maxTok }
+      })
+    }
   );
-  const data=await res.json();
-  if(data.error) throw new Error(data.error.message);
-  const text=data.candidates?.[0]?.content?.parts?.[0]?.text??'';
-  try{return JSON.parse(text.replace(/```json\n?|```\n?/g,'').trim())}
-  catch{throw new Error('AI returned unexpected format. Try again.')}
+
+  const data = await res.json();
+  if(data.error){
+    const m = data.error.message||'API error';
+    if(res.status===400) throw new Error('Invalid API key — open ⚙ API settings and re-paste.');
+    if(res.status===403) throw new Error('Key blocked. Go to Google Cloud Console → Credentials → edit key → restrict to Generative Language API only.');
+    throw new Error(m);
+  }
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  if(!text) throw new Error('Empty response from Gemini. Try again.');
+  try{
+    return JSON.parse(text.replace(/```json\n?|```\n?/g,'').trim());
+  } catch {
+    throw new Error('Gemini returned malformed JSON. Try again.');
+  }
 }
 
-// ────────────────────────────────────────────────────────────── Main Run
+// ─── Main run ──────────────────────────────────────────────────────────────────
 async function run(){
-  const vin=document.getElementById('vin-input').value.trim();
+  const vin = document.getElementById('vin-input').value.trim();
   if(vin.length!==17) return;
-  clearError();
-  parts=[]; altMap={}; showAlt=false; altLoaded=false; activeCat='All';
-  document.getElementById('vehicle-card').style.display='none';
-  document.getElementById('filter-bar').style.display='none';
-  document.getElementById('parts-output').innerHTML='';
+
+  clearErr();
+  components=[]; activeCat='All';
+  ['vehicle-card','filter-bar','stat-bar'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('output').innerHTML='';
   document.getElementById('footer-note').style.display='none';
   document.getElementById('empty-state').style.display='none';
-  document.getElementById('alt-btn').style.display='none';
 
-  const runBtn=document.getElementById('run-btn');
-  const setBtn=(t)=>{runBtn.textContent=t;runBtn.disabled=true};
-  setBtn('⏳ Decoding VIN…');
+  const btn = document.getElementById('run-btn');
+  const setBtn = t => { btn.textContent=t; btn.disabled=true; };
 
   try{
-    // NHTSA decode
-    const r=await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`);
-    const d=await r.json();
-    const v=d.Results?.[0];
-    if(!v?.Make) throw new Error('VIN not found in NHTSA database. Check the VIN and try again.');
+    // ── Step 1: NHTSA VIN decode (free, no key) ──────────────────────────────
+    setBtn('⏳ Decoding VIN…');
+    const nr = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`);
+    const nd = await nr.json();
+    const v = nd.Results?.[0];
+    if(!v?.Make) throw new Error('VIN not found in NHTSA database. Check the number and try again.');
 
-    const engParts=[
-      v.DisplacementL?parseFloat(v.DisplacementL).toFixed(1)+'L':null,
-      v.EngineCylinders?`V${v.EngineCylinders}`:null,
-      v.FuelTypePrimary||null
-    ].filter(Boolean);
+    const eng = [
+      v.DisplacementL ? parseFloat(v.DisplacementL).toFixed(1)+'L' : null,
+      v.EngineCylinders ? `V${v.EngineCylinders}` : null,
+      v.FuelTypePrimary || null
+    ].filter(Boolean).join(' ');
 
-    vehicleInfo={
-      make:v.Make,model:v.Model,year:v.ModelYear,trim:v.Trim,
-      engine:engParts.join(' ')||v.EngineModel||'',
-      drive:v.DriveType||'',body:v.BodyClass||'',
-      trans:v.TransmissionStyle||'',vin
+    vehicle = {
+      make:v.Make, model:v.Model, year:v.ModelYear, trim:v.Trim||'',
+      engine:eng||v.EngineModel||'', drive:v.DriveType||'',
+      body:v.BodyClass||'', trans:v.TransmissionStyle||'', vin
     };
 
-    // Render vehicle card
-    document.getElementById('vehicle-title').innerHTML=
-      `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`+
-      (vehicleInfo.trim?` <span style="color:#8b949e;font-weight:400;font-size:14px">${vehicleInfo.trim}</span>`:'');
-    document.getElementById('vehicle-vin').textContent=vin;
-    document.getElementById('vehicle-specs').innerHTML=
-      [['Engine',vehicleInfo.engine],['Drive Type',vehicleInfo.drive],
-       ['Body Style',vehicleInfo.body],['Transmission',vehicleInfo.trans]]
+    // Show vehicle card
+    document.getElementById('veh-title').innerHTML =
+      `${vehicle.year} ${vehicle.make} ${vehicle.model}` +
+      (vehicle.trim ? ` <span style="color:#8b949e;font-weight:400;font-size:14px">${vehicle.trim}</span>` : '');
+    document.getElementById('veh-vin').textContent = vin;
+    document.getElementById('veh-specs').innerHTML =
+      [['Engine',vehicle.engine],['Drive',vehicle.drive],['Body',vehicle.body],['Trans.',vehicle.trans]]
       .filter(([,val])=>val)
       .map(([l,val])=>`<div class="info-cell"><div class="info-label">${l}</div><div class="info-value">${val}</div></div>`)
       .join('');
     document.getElementById('vehicle-card').style.display='block';
 
-    // Gemini parts
-    setBtn('⚙️ Building Parts List…');
-    const partsData=await callGemini(
-`You are an OEM automotive parts database. Generate exactly 55 realistic replacement parts for this vehicle.
+    // ── Step 2: Gemini — all parts + alternatives in one call ────────────────
+    setBtn('⚙️ Building full parts database…');
+    document.getElementById('output').innerHTML =
+      `<div class="loading-msg">⚙️ Generating 90+ components with OEM & aftermarket alternatives…<br><span style="font-size:11px;margin-top:4px;display:block">This takes about 20–30 seconds</span></div>`;
 
-Vehicle: ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}${vehicleInfo.trim?` (${vehicleInfo.trim})`:''}
-Engine: ${vehicleInfo.engine||'N/A'} | Drive: ${vehicleInfo.drive||'N/A'} | Body: ${vehicleInfo.body||'N/A'} | Trans: ${vehicleInfo.trans||'N/A'}
+    const data = await callGemini(`
+Generate a complete automotive parts database for the vehicle below.
+For EVERY component: provide the OEM part AND exactly 3 aftermarket alternatives.
 
-Return ONLY a raw JSON object — no markdown fences, no preamble:
-{"parts":[{"name":"Engine Air Filter","oem_number":"17220-5G0-A00","category":"Engine","description":"Primary intake air filter"}]}
+Vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model}${vehicle.trim?' ('+vehicle.trim+')':''}
+Engine: ${vehicle.engine||'N/A'} | Drive: ${vehicle.drive||'N/A'} | Body: ${vehicle.body||'N/A'} | Trans: ${vehicle.trans||'N/A'}
 
-Rules:
-• Cover ALL categories: Engine, Transmission, Brakes, Suspension, Steering, Electrical, Cooling, Fuel System, Exhaust, HVAC, Body, Interior
-• 4-6 parts per category
-• Use realistic ${vehicleInfo.make}-style OEM part number formats:
-  Honda→17220-5G0-A00, Toyota→90915-YZZD3, Ford→FR3Z-6714-B, GM/Chevy→25182496,
-  Dodge/Chrysler→04884899AB, BMW→11-42-7-566-327, Mercedes→000-180-24-09, Nissan→16546-JA10B,
-  Hyundai/Kia→26300-35505, Subaru→15208AA160, Mazda→SH01-14-302
-• Match parts exactly to this vehicle's engine and drivetrain`
+Return ONLY raw JSON — no markdown fences, no preamble, no extra text:
+{"components":[{"name":"Engine Air Filter","category":"Engine","description":"Intake air filtration","parts":[{"brand":"${vehicle.make} OEM","part_number":"17220-5G0-A00","is_oem":true},{"brand":"K&N","part_number":"33-2460","is_oem":false},{"brand":"FRAM","part_number":"CA10755","is_oem":false},{"brand":"Bosch","part_number":"5580WS","is_oem":false}]}]}
+
+REQUIRED — generate every component listed below (90+ total, grouped by category):
+
+ENGINE (generate all 18):
+Engine Air Filter, Engine Oil Filter, Spark Plugs (set), Ignition Coils (set), Serpentine Belt,
+${(vehicle.trans||'').toLowerCase().includes('manual')?'Timing Chain Tensioner Kit':'Timing Belt Kit (or Timing Chain Tensioner Kit if chain-driven)'},
+PCV Valve, Crankshaft Position Sensor, Camshaft Position Sensor, Mass Airflow Sensor,
+Throttle Body Assembly, Intake Manifold Gasket Set, Valve Cover Gasket Set, Head Gasket Set,
+Front Engine Mount, Rear Engine Mount, Oil Pressure Sensor, Coolant Temperature Sensor
+
+TRANSMISSION (generate all 5):
+Transmission Filter Kit, Transmission Mount, Transmission Pan Gasket, Shift Solenoid Set,
+${(vehicle.trans||'').toLowerCase().includes('manual')?'Clutch Kit':'Torque Converter'}
+
+BRAKES (generate all 10):
+Front Brake Pads, Rear Brake Pads, Front Brake Rotors (pair), Rear Brake Rotors (pair),
+Front Brake Calipers (pair), Rear Brake Calipers (pair), Brake Master Cylinder, Brake Booster,
+Front ABS Wheel Speed Sensor, Rear ABS Wheel Speed Sensor
+
+SUSPENSION (generate all 14):
+Front Struts (pair), Rear Shocks/Struts (pair), Front Strut Mounts (pair), Front Coil Springs (pair),
+Rear Coil Springs (pair), Front Lower Control Arms (pair), Front Ball Joints (pair),
+Outer Tie Rod Ends (pair), Inner Tie Rod Ends (pair), Front Sway Bar End Links (pair),
+Rear Sway Bar End Links (pair), Front Sway Bar Bushings, Front Wheel Hub & Bearing Assembly, Rear Wheel Hub & Bearing Assembly
+
+STEERING (generate all 4):
+Rack and Pinion Assembly, Power Steering Pump, Power Steering Pressure Hose, Power Steering Return Hose
+
+ELECTRICAL (generate all 9):
+Car Battery, Alternator, Starter Motor, Upstream Oxygen Sensor, Downstream Oxygen Sensor,
+MAP Sensor, Throttle Position Sensor, Idle Air Control Valve, Knock Sensor
+
+COOLING (generate all 9):
+Radiator, Water Pump, Thermostat & Housing Kit, Coolant Overflow Reservoir,
+Upper Radiator Hose, Lower Radiator Hose, Heater Core Hoses (set), Radiator Fan Motor, Radiator Cap
+
+FUEL SYSTEM (generate all 6):
+Fuel Pump Assembly, Fuel Filter, Fuel Pressure Regulator, Fuel Injectors (set),
+Charcoal Canister Purge Valve, Fuel Tank Cap
+
+EXHAUST (generate all 6):
+Catalytic Converter, Exhaust Manifold, Exhaust Manifold Gasket Set, Flex Pipe / Front Exhaust Pipe,
+Muffler Assembly, Exhaust Hangers (set)
+
+HVAC (generate all 9):
+Cabin Air Filter, AC Compressor, AC Condenser, AC Evaporator Core, Blower Motor,
+Blower Motor Resistor, Heater Core, AC Receiver/Drier, Expansion Valve / Orifice Tube
+
+BODY (generate all 4):
+Windshield Wiper Blades (set), Hood Gas Struts (pair), Front Door Seals, Rear Door Seals
+
+PART NUMBER RULES:
+• OEM numbers must follow ${vehicle.make}'s real format:
+  Honda→17220-5G0-A00 | Toyota→90915-YZZD3 | Ford→FR3Z-6714-B | GM/Chevy→25182496
+  Dodge/Chrysler→04884899AB | BMW→11-42-7-566-327 | Mercedes→000-180-24-09
+  Nissan→16546-JA10B | Hyundai/Kia→26300-35505 | Subaru→15208AA160 | VW/Audi→06A-906-433-B
+• Use realistic aftermarket part numbers — not placeholder strings
+• is_oem must be true for OEM, false for all aftermarket entries
+
+AFTERMARKET BRAND ASSIGNMENTS (pick 3 appropriate brands per component):
+Filters → K&N, FRAM, Bosch, WIX, Purolator, Denso, NGK
+Brakes → Brembo, EBC, Hawk, Akebono, Wagner, StopTech, Raybestos, Centric, ACDelco
+Suspension/Steering → Monroe, KYB, Bilstein, Moog, Gabriel, Dorman, ACDelco, Sachs, TRW
+Electrical/Sensors → Denso, Bosch, Delphi, Standard Motor Products, Dorman, ACDelco, Walker Products
+Cooling → Mishimoto, Spectra Premium, Gates, Dorman, Modine, Stant
+Fuel System → Walbro, Delphi, Carter, Spectra Premium, Dorman, Bosch
+Belts/Hoses → Gates, Dayco, Continental, Bando, Goodyear
+Exhaust → Walker, MagnaFlow, AP Exhaust, Dorman, Bosal
+HVAC → Four Seasons, Denso, UAC, Dorman, Spectra Premium
+Body → Dorman, Sherman, Replace, AutoTrust`
     );
 
-    parts=partsData.parts??[];
-    if(!parts.length) throw new Error('No parts returned. Please try again.');
+    components = data.components ?? [];
+    if(!components.length) throw new Error('No components returned. Try again.');
 
     renderCatChips();
-    renderParts();
-    document.getElementById('filter-bar').style.display='block';
-    document.getElementById('footer-note').style.display='block';
-    document.getElementById('alt-btn').style.display='inline-block';
+    render();
+    renderStats();
+    document.getElementById('filter-bar').style.display = 'block';
+    document.getElementById('footer-note').style.display = 'block';
 
-  }catch(e){
-    showError(e.message||'Unexpected error. Please try again.');
-    document.getElementById('empty-state').style.display='block';
-  }finally{
-    setBtn('🔍 Get Parts List');
-    document.getElementById('run-btn').disabled=
-      document.getElementById('vin-input').value.length!==17;
+  } catch(e){
+    document.getElementById('output').innerHTML='';
+    showErr(e.message || 'Unexpected error. Please try again.');
+    document.getElementById('empty-state').style.display = 'block';
+  } finally {
+    setBtn('🔍 Get Full Parts List');
+    document.getElementById('run-btn').disabled = document.getElementById('vin-input').value.length!==17;
   }
 }
 
-// ────────────────────────────────────────────────────────────── Category chips
-function groupBy(arr,fn){return arr.reduce((a,x)=>{(a[fn(x)]??=[]).push(x);return a},{})}
+// ─── Stats bar ─────────────────────────────────────────────────────────────────
+function renderStats(){
+  const grp = groupBy(components, c=>c.category);
+  const totalParts = components.reduce((s,c)=>s+c.parts.length,0);
+  const alts = components.reduce((s,c)=>s+c.parts.filter(p=>!p.is_oem).length,0);
+  const sb = document.getElementById('stat-bar');
+  sb.innerHTML = `
+    <div class="stat"><strong>${components.length}</strong> components</div>
+    <div class="stat"><strong>${Object.keys(grp).length}</strong> categories</div>
+    <div class="stat"><strong>${alts}</strong> alternatives</div>
+    <div class="stat"><strong>${totalParts}</strong> total part numbers</div>`;
+  sb.style.display='flex';
+}
+
+// ─── Category chips ────────────────────────────────────────────────────────────
+function groupBy(arr,fn){ return arr.reduce((a,x)=>{ (a[fn(x)]??=[]).push(x); return a; },{}); }
 
 function renderCatChips(){
-  const grp=groupBy(parts,p=>p.category);
-  const cats=['All',...Object.keys(grp).sort()];
-  document.getElementById('cat-chips').innerHTML=cats.map(c=>{
-    const color=c==='All'?'#58a6ff':(CATS[c]||'#6b7280');
-    const count=c==='All'?parts.length:(grp[c]?.length??0);
-    const label=c==='All'?`All (${count})`:`${ICONS[c]||'🔧'} ${c} (${count})`;
-    const act=activeCat===c;
-    return `<button class="chip" style="color:${act?color:'#8b949e'};border-color:${act?color:'#30363d'};background:${act?color+'22':'#161b22'}" onclick="setCat('${c}')">${label}</button>`;
+  const grp = groupBy(components,c=>c.category);
+  const cats = ['All',...Object.keys(grp).sort()];
+  document.getElementById('cat-chips').innerHTML = cats.map(c=>{
+    const color = c==='All' ? '#58a6ff' : (CATS[c]||'#6b7280');
+    const count = c==='All' ? components.length : (grp[c]?.length??0);
+    const label = c==='All' ? `All (${count})` : `${ICONS[c]||'🔧'} ${c} (${count})`;
+    const act = activeCat===c;
+    return `<button class="chip"
+      style="color:${act?color:'#8b949e'};border-color:${act?color:'#30363d'};background:${act?color+'22':'#161b22'}"
+      onclick="setCat('${c}')">${label}</button>`;
   }).join('');
 }
 
-function setCat(c){activeCat=c;renderCatChips();renderParts()}
+function setCat(c){ activeCat=c; renderCatChips(); render(); }
 
-// ────────────────────────────────────────────────────────────── Render parts
-function renderParts(){
-  const q=document.getElementById('search-input').value.toLowerCase();
-  const filtered=parts.filter(p=>{
-    const catOk=activeCat==='All'||p.category===activeCat;
-    const srchOk=!q||p.name.toLowerCase().includes(q)||p.oem_number.toLowerCase().includes(q);
-    return catOk&&srchOk;
+// ─── Render ─────────────────────────────────────────────────────────────────────
+function render(){
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = components.filter(comp=>{
+    if(activeCat!=='All' && comp.category!==activeCat) return false;
+    if(!q) return true;
+    return comp.name.toLowerCase().includes(q)
+      || (comp.description||'').toLowerCase().includes(q)
+      || comp.parts.some(p=>p.brand.toLowerCase().includes(q)||p.part_number.toLowerCase().includes(q));
   });
-  const grp=groupBy(filtered,p=>p.category);
-  const out=document.getElementById('parts-output');
+
+  const grp = groupBy(filtered,c=>c.category);
+  const out = document.getElementById('output');
 
   if(!filtered.length){
-    out.innerHTML=`<div style="text-align:center;padding:30px;color:#8b949e;font-size:13px">No parts match.
-      <button onclick="document.getElementById('search-input').value='';renderParts()"
-        style="background:none;border:none;color:#58a6ff;cursor:pointer;font-size:13px">Clear search</button></div>`;
+    out.innerHTML=`<div style="text-align:center;padding:30px;color:#8b949e;font-size:13px">
+      No results.
+      <button onclick="document.getElementById('search-input').value='';render()"
+        style="background:none;border:none;color:#58a6ff;cursor:pointer;font-size:13px;padding:0;margin-left:4px">Clear search</button>
+    </div>`;
     return;
   }
 
-  out.innerHTML=Object.entries(grp).sort(([a],[b])=>a.localeCompare(b)).map(([cat,catParts])=>{
-    const color=CATS[cat]||'#6b7280';
-    const icon=ICONS[cat]||'🔧';
-    const altHeader=showAlt?'<th>Aftermarket Alternatives</th>':'<th class="hide-sm">Description</th>';
-    const rows=catParts.map((p,i)=>{
-      let altCell;
-      if(showAlt){
-        const alts=altMap[p.oem_number];
-        altCell=altLoaded
-          ?(alts?.length
-            ?`<td>${alts.map(a=>`<span class="alt-tag"><span class="alt-brand">${a.brand}</span><span style="color:#30363d">·</span><span class="alt-num">${a.part_number}</span></span>`).join('')}</td>`
-            :'<td><span style="color:#484f58;font-size:12px">—</span></td>')
-          :'<td><span style="color:#484f58;font-size:12px">Loading…</span></td>';
-      }else{
-        altCell=`<td class="hide-sm" style="color:#8b949e;font-size:12px">${p.description||''}</td>`;
-      }
-      return `<tr style="border-top:${i>0?'1px solid #21262d':'none'};background:${i%2?'#0d111708':'transparent'}">
-        <td style="font-weight:500">${p.name}</td>
-        <td><code class="part-num">${p.oem_number}</code></td>
-        ${altCell}</tr>`;
+  out.innerHTML = Object.entries(grp).sort(([a],[b])=>a.localeCompare(b)).map(([cat,comps])=>{
+    const color = CATS[cat]||'#6b7280';
+    const icon  = ICONS[cat]||'🔧';
+
+    const cards = comps.map(comp=>{
+      const rows = comp.parts.map(p => {
+        const oem = p.is_oem;
+        return `<tr class="${oem?'oem-tr':'alt-tr'}">
+          <td class="td-badge"><span class="badge ${oem?'badge-oem':'badge-alt'}">${oem?'OEM':'ALT'}</span></td>
+          <td class="td-brand ${oem?'oem-brand':'alt-brand'}">${p.brand}</td>
+          <td><code class="${oem?'oem-num':'alt-num'}">${p.part_number}</code></td>
+        </tr>`;
+      }).join('');
+
+      return `<div class="comp-card">
+        <div class="comp-head">
+          <div class="comp-name">${comp.name}</div>
+          ${comp.description ? `<div class="comp-desc">${comp.description}</div>` : ''}
+        </div>
+        <table class="pt"><tbody>${rows}</tbody></table>
+      </div>`;
     }).join('');
 
-    return `<div class="cat-header" style="color:${color}">
-      <div class="cat-dot" style="background:${color}"></div>
-      ${icon} ${cat} <span class="cat-count">— ${catParts.length} parts</span>
-    </div>
-    <div class="table-wrap">
-      <table class="parts-table">
-        <thead><tr><th>Part Name</th><th>OEM Part #</th>${altHeader}</tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+    return `<div style="margin-bottom:22px">
+      <div style="display:flex;align-items:center;gap:7px;color:${color};font-size:13px;font-weight:600;margin-bottom:8px">
+        <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>
+        ${icon} ${cat}
+        <span style="color:#484f58;font-size:11px;font-weight:400">— ${comps.length} components</span>
+      </div>
+      ${cards}
     </div>`;
   }).join('');
 }
 
-// ────────────────────────────────────────────────────────────── Alternatives
-async function toggleAlt(){
-  const btn=document.getElementById('alt-btn');
-  if(showAlt){
-    showAlt=false;
-    btn.style.cssText='display:inline-block;background:#1c2f1e;color:#3fb950;border:1px solid #238636;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer';
-    btn.textContent='🔄 Show Aftermarket Alternatives';
-    renderParts();
-    return;
-  }
-  showAlt=true;
-  btn.style.cssText='display:inline-block;background:#1f3a5f;color:#58a6ff;border:1px solid #1f6feb;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer';
-  btn.textContent='📋 Hide Alternatives';
-  renderParts();
-  if(altLoaded) return;
-
-  btn.textContent='⏳ Loading Alternatives…';
-  btn.disabled=true;
-  try{
-    const list=parts.map(p=>`${p.oem_number}|${p.name}|${p.category}`).join('\n');
-    const data=await callGemini(
-`For each OEM part below for a ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}, list 2–3 aftermarket alternatives.
-
-${list}
-
-Return ONLY raw JSON (no markdown):
-{"alternatives":{"OEM_PART_NUMBER":[{"brand":"FRAM","part_number":"PH3600"},{"brand":"Bosch","part_number":"3330"}]}}
-
-Brand guide:
-Filters→FRAM,K&N,Bosch,Mann,WIX,Purolator | Brakes→Brembo,EBC,Akebono,Hawk,Wagner,StopTech,Raybestos
-Suspension→Monroe,KYB,Bilstein,Moog,Gabriel | Electrical→Denso,Bosch,Delphi,Standard Motor Products,Dorman
-Cooling→Mishimoto,Spectra,Gates,Dorman | Fuel→Walbro,Delphi,Carter,Spectra
-Belts→Gates,Dayco,Continental | Exhaust→Walker,MagnaFlow,AP Exhaust | Steering→Moog,TRW,Cardone,Dorman
-HVAC→Four Seasons,Denso,UAC | Body/Interior→Dorman,Sherman,Replace
-Use realistic part numbers for every brand listed.`,6144);
-    altMap=data.alternatives??{};
-    altLoaded=true;
-  }catch(e){
-    showError('Alternatives failed: '+e.message);
-    showAlt=false;
-  }finally{
-    btn.disabled=false;
-    btn.textContent=showAlt?'📋 Hide Alternatives':'🔄 Show Aftermarket Alternatives';
-    renderParts();
-  }
-}
+// ─── Init ──────────────────────────────────────────────────────────────────────
+updateBadge();
 </script>
 </body>
 </html>
