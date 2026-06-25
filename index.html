@@ -20,6 +20,8 @@ input:focus{border-color:#58a6ff}
 .btn-sm{padding:6px 14px;font-size:12px}
 .progress-bar{height:3px;background:#21262d;border-radius:2px;overflow:hidden;margin-top:8px}
 .progress-fill{height:100%;border-radius:2px;transition:width .1s,background .2s}
+.pf-pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .error-box{background:#3d1717;border:1px solid #f85149;border-radius:7px;padding:9px 13px;font-size:13px;margin-top:10px;display:none}
 .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:14px}
 .info-cell{background:#0d1117;border-radius:7px;padding:9px 12px}
@@ -28,25 +30,27 @@ input:focus{border-color:#58a6ff}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
 .chip{border-radius:20px;padding:4px 13px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #30363d;background:#161b22;color:#8b949e;transition:all .15s}
 /* Component cards */
-.comp-card{background:#161b22;border:1px solid #30363d;border-radius:9px;margin-bottom:10px;overflow:hidden}
+.comp-card{background:#161b22;border:1px solid #30363d;border-radius:9px;margin-bottom:8px;overflow:hidden}
 .comp-head{padding:9px 14px 8px;background:#1c2128;border-bottom:1px solid #21262d}
 .comp-name{font-size:13px;font-weight:600;color:#e6edf3}
 .comp-desc{font-size:11px;color:#484f58;margin-top:1px}
 .pt{width:100%;border-collapse:collapse}
-.pt td{padding:8px 14px;font-size:12px;vertical-align:middle;border-bottom:1px solid #21262d}
+.pt td{padding:7px 13px;font-size:12px;vertical-align:middle;border-bottom:1px solid #21262d}
 .pt tr:last-child td{border-bottom:none}
 .oem-tr td{background:#0c1c12}
-.oem-tr td:first-child{border-left:3px solid #3fb950}
-.alt-tr td:first-child{border-left:3px solid transparent}
+.oem-tr td:first-child{border-left:3px solid #3fb950;padding-left:11px}
+.alt-tr td:first-child{border-left:3px solid transparent;padding-left:11px}
 .badge{border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
 .badge-oem{background:#1c3a2e;color:#3fb950;border:1px solid #2a5c3e}
 .badge-alt{background:#1a2433;color:#79c0ff;border:1px solid #1f4070}
+.badge-wait{background:#21262d;color:#484f58;border:1px solid #30363d}
 .oem-brand{color:#e6edf3;font-weight:500}
 .alt-brand{color:#c9d1d9}
+.wait-brand{color:#484f58;font-style:italic}
 .oem-num{font-family:'Courier New',monospace;color:#79c0ff;font-size:11.5px}
 .alt-num{font-family:'Courier New',monospace;color:#56d364;font-size:11.5px}
+.wait-num{color:#30363d;font-size:11.5px}
 .td-badge{width:44px}
-.td-brand{min-width:90px;max-width:160px}
 .row-flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .key-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
 .key-badge.ok{background:#1c3a2e;color:#3fb950;border:1px solid #238636}
@@ -58,8 +62,12 @@ input:focus{border-color:#58a6ff}
 .tlink{background:none;border:none;color:#8b949e;font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0}
 .footer-note{margin-top:8px;padding:10px 14px;background:#1c2128;border:1px solid #30363d;border-radius:7px;font-size:11px;color:#8b949e;line-height:1.5;display:none}
 .empty-state{text-align:center;padding:60px 20px;color:#8b949e}
-.loading-msg{text-align:center;padding:40px 20px;color:#8b949e;font-size:13px}
-@media(max-width:600px){body{padding:10px}h1{font-size:19px}.pt td{padding:7px 10px}.td-brand{max-width:110px}}
+.step-indicator{display:none;align-items:center;gap:10px;padding:10px 14px;background:#161b22;border:1px solid #30363d;border-radius:8px;margin-bottom:12px;font-size:12px;color:#8b949e}
+.step-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.step-dot.done{background:#3fb950}
+.step-dot.active{background:#58a6ff;animation:pulse 1s infinite}
+.step-dot.wait{background:#30363d}
+@media(max-width:600px){body{padding:10px}h1{font-size:19px}.pt td{padding:6px 10px}}
 </style>
 </head>
 <body>
@@ -77,7 +85,7 @@ input:focus{border-color:#58a6ff}
   </div>
 </div>
 
-<!-- Settings card -->
+<!-- Settings -->
 <div class="card" id="settings-card" style="display:none">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
     <span style="font-size:13px;font-weight:600;color:#c9d1d9">Gemini API Key</span>
@@ -100,9 +108,9 @@ input:focus{border-color:#58a6ff}
     </div>
   </div>
   <div style="background:#1c2128;border:1px solid #30363d;border-radius:7px;padding:10px 13px;font-size:11px;color:#8b949e;line-height:1.7">
-    <strong style="color:#c9d1d9">Get a free key:</strong> aistudio.google.com → Get API key → create/select a project → copy &amp; paste above. Key saves automatically.<br>
-    Free tier: ~10 req/min · 500 req/day &nbsp;·&nbsp; Key stored in your browser only, never sent anywhere except Google.<br>
-    <strong style="color:#f0883e">⚠ Required since June 19 2026:</strong> In Google Cloud Console → Credentials → edit key → restrict to <em>Generative Language API</em> only.
+    <strong style="color:#c9d1d9">Get a free key:</strong> aistudio.google.com → Get API key → create/select project → copy &amp; paste above. Saves automatically.<br>
+    Free tier: ~10 req/min · 500 req/day &nbsp;·&nbsp; Key stored in your browser only.<br>
+    <strong style="color:#f0883e">⚠ Required:</strong> Google Cloud Console → Credentials → edit key → restrict to <em>Generative Language API</em> only.
   </div>
 </div>
 
@@ -125,11 +133,20 @@ input:focus{border-color:#58a6ff}
   <div class="info-grid" id="veh-specs"></div>
 </div>
 
+<!-- Step progress indicator -->
+<div class="step-indicator" id="step-indicator">
+  <div id="s1-dot" class="step-dot wait"></div>
+  <span id="s1-label" style="color:#484f58">OEM parts</span>
+  <div style="flex:1;height:1px;background:#30363d;margin:0 4px"></div>
+  <div id="s2-dot" class="step-dot wait"></div>
+  <span id="s2-label" style="color:#484f58">Alternatives</span>
+</div>
+
 <!-- Filters + search -->
 <div id="filter-bar" style="display:none;margin-bottom:10px">
   <div class="chips" id="cat-chips"></div>
   <input type="text" id="search-input" style="font-size:13px;padding:9px 13px"
-    placeholder="Search by component name, brand, or part number…" oninput="render()" />
+    placeholder="Search component name, brand, or part number…" oninput="render()" />
 </div>
 
 <!-- Stats -->
@@ -137,6 +154,12 @@ input:focus{border-color:#58a6ff}
 
 <!-- Output -->
 <div id="output"></div>
+
+<!-- Retry alts button (shown if stage 2 fails) -->
+<div id="retry-bar" style="display:none;margin-top:8px;padding:10px 14px;background:#2d1e0e;border:1px solid #7d4e0a;border-radius:8px;font-size:12px;color:#f0883e;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+  <span>⚠️ Alternatives failed to load. OEM data is still shown above.</span>
+  <button class="btn btn-ghost btn-sm" onclick="loadAlternatives()">↺ Retry alternatives</button>
+</div>
 
 <!-- Empty state -->
 <div class="empty-state" id="empty-state">
@@ -146,13 +169,12 @@ input:focus{border-color:#58a6ff}
 </div>
 
 <div class="footer-note" id="footer-note">
-  ℹ️ Vehicle data from <strong>NHTSA vPIC API</strong> (free, no key). All parts are <strong>AI-generated</strong> by Gemini based on vehicle specs — use as a reference guide. For verified OEM data, integrate TecDoc, Epicor, or Mitchell1.
+  ℹ️ Vehicle data from <strong>NHTSA vPIC API</strong> (free, no key). Parts are <strong>AI-generated</strong> by Gemini — use as a reference. For verified OEM catalog data, integrate TecDoc, Epicor, or Mitchell1.
 </div>
 
-</div><!-- /wrap -->
-
+</div>
 <script>
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Constants ──────────────────────────────────────────────────────────────
 const CATS={
   Engine:'#f87171',Transmission:'#fb923c',Brakes:'#facc15',Suspension:'#4ade80',
   Steering:'#34d399',Electrical:'#60a5fa',Cooling:'#38bdf8','Fuel System':'#f59e0b',
@@ -164,331 +186,364 @@ const ICONS={
   Body:'🚘',Interior:'💺',Other:'🔧'
 };
 
-// ─── State ────────────────────────────────────────────────────────────────────
-let components=[], activeCat='All', saveTimer=null, vehicle=null;
+// ─── State ──────────────────────────────────────────────────────────────────
+let components=[], activeCat='All', saveTimer=null, vehicle=null, altLoaded=false;
 
-// ─── Key management ───────────────────────────────────────────────────────────
-const KEY_STORE = 'vfinder_gkey';
+// ─── Key management ─────────────────────────────────────────────────────────
+const KEY_STORE='vfinder_gkey';
 function getKey(){ return localStorage.getItem(KEY_STORE)||''; }
-
 function onKeyInput(){
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{
-    const k = document.getElementById('api-key-input').value.trim();
+  saveTimer=setTimeout(()=>{
+    const k=document.getElementById('api-key-input').value.trim();
     if(k){ localStorage.setItem(KEY_STORE,k); updateBadge(); }
-  }, 500);
+  },500);
 }
-
 function clearKey(){
   localStorage.removeItem(KEY_STORE);
-  document.getElementById('api-key-input').value = '';
-  document.getElementById('key-status').textContent = 'Key cleared.';
+  document.getElementById('api-key-input').value='';
+  document.getElementById('key-status').textContent='Key cleared.';
   updateBadge();
 }
-
 function updateBadge(){
-  const b = document.getElementById('key-badge');
-  const s = document.getElementById('key-status');
-  if(getKey()){
-    b.className='key-badge ok'; b.textContent='✓ Key saved';
-    s.textContent='✓ Saved automatically'; s.style.color='#3fb950';
-  } else {
-    b.className='key-badge missing'; b.textContent='⚠ No API key';
-    s.textContent='';
-  }
+  const b=document.getElementById('key-badge'),s=document.getElementById('key-status');
+  if(getKey()){b.className='key-badge ok';b.textContent='✓ Key saved';s.textContent='✓ Saved automatically';s.style.color='#3fb950';}
+  else{b.className='key-badge missing';b.textContent='⚠ No API key';s.textContent='';}
 }
-
 function toggleSettings(){
-  const c = document.getElementById('settings-card');
-  const opening = c.style.display==='none';
-  c.style.display = opening ? 'block' : 'none';
+  const c=document.getElementById('settings-card');
+  const opening=c.style.display==='none';
+  c.style.display=opening?'block':'none';
   if(opening){
-    const inp = document.getElementById('api-key-input');
-    inp.placeholder = getKey()
-      ? '●●●●●●●●●●●●●●●●●● (key saved — paste to replace)'
-      : 'Paste key from aistudio.google.com — free, no credit card';
+    const inp=document.getElementById('api-key-input');
+    inp.placeholder=getKey()?'●●●●●●●●●●●●●●●●●● (key saved — paste to replace)':'Paste key from aistudio.google.com — free, no credit card';
   }
 }
 
-// ─── VIN input ─────────────────────────────────────────────────────────────────
+// ─── VIN input ───────────────────────────────────────────────────────────────
 function onVinInput(){
-  const inp = document.getElementById('vin-input');
-  inp.value = inp.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'');
-  const n = inp.value.length;
-  const bar = document.getElementById('vin-bar');
-  bar.style.width = (n/17*100)+'%';
-  bar.style.background = n===17 ? '#3fb950' : '#1f6feb';
-  document.getElementById('run-btn').disabled = n!==17;
+  const inp=document.getElementById('vin-input');
+  inp.value=inp.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'');
+  const n=inp.value.length;
+  const bar=document.getElementById('vin-bar');
+  bar.style.width=(n/17*100)+'%';
+  bar.style.background=n===17?'#3fb950':'#1f6feb';
+  document.getElementById('run-btn').disabled=n!==17;
 }
 
-// ─── Error ─────────────────────────────────────────────────────────────────────
+// ─── Error / step UI ────────────────────────────────────────────────────────
 function showErr(msg){
-  const el = document.getElementById('error-box');
-  el.innerHTML = '⚠️ '+msg; el.style.display='block';
+  const el=document.getElementById('error-box');
+  el.innerHTML='⚠️ '+msg; el.style.display='block';
 }
 function clearErr(){ document.getElementById('error-box').style.display='none'; }
 
-// ─── Gemini call ───────────────────────────────────────────────────────────────
-async function callGemini(prompt, maxTok=16384){
-  const key = getKey();
-  if(!key) throw new Error('No API key. Click <strong>⚙ API settings</strong> above and paste your free key from aistudio.google.com.');
-  const model = document.getElementById('model-select').value;
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-    {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'x-goog-api-key':key },
-      body: JSON.stringify({
-        contents:[{ parts:[{text:prompt}] }],
-        generationConfig:{ temperature:0.1, maxOutputTokens:maxTok }
-      })
-    }
-  );
-
-  const data = await res.json();
-  if(data.error){
-    const m = data.error.message||'API error';
-    if(res.status===400) throw new Error('Invalid API key — open ⚙ API settings and re-paste.');
-    if(res.status===403) throw new Error('Key blocked. Go to Google Cloud Console → Credentials → edit key → restrict to Generative Language API only.');
-    throw new Error(m);
-  }
-
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-  if(!text) throw new Error('Empty response from Gemini. Try again.');
-  try{
-    return JSON.parse(text.replace(/```json\n?|```\n?/g,'').trim());
-  } catch {
-    throw new Error('Gemini returned malformed JSON. Try again.');
-  }
+function setStep(s1,s2){
+  // s1/s2: 'wait'|'active'|'done'
+  const d1=document.getElementById('s1-dot'),l1=document.getElementById('s1-label');
+  const d2=document.getElementById('s2-dot'),l2=document.getElementById('s2-label');
+  const colors={wait:'#30363d',active:'#58a6ff',done:'#3fb950'};
+  const labels={wait:'#484f58',active:'#e6edf3',done:'#3fb950'};
+  d1.className='step-dot '+(s1==='active'?'active':'');
+  d1.style.background=colors[s1];
+  l1.style.color=labels[s1];
+  d2.className='step-dot '+(s2==='active'?'active':'');
+  d2.style.background=colors[s2];
+  l2.style.color=labels[s2];
+  document.getElementById('step-indicator').style.display='flex';
 }
 
-// ─── Main run ──────────────────────────────────────────────────────────────────
+// ─── Robust JSON extractor ───────────────────────────────────────────────────
+function extractJSON(text){
+  // 1. Direct parse
+  try{ return JSON.parse(text.trim()); } catch{}
+  // 2. Strip markdown fences (any language tag)
+  let s=text.replace(/^```[a-z]*\n?/im,'').replace(/\n?```\s*$/im,'').trim();
+  try{ return JSON.parse(s); } catch{}
+  // 3. Find outermost { ... }
+  const a=s.indexOf('{'), b=s.lastIndexOf('}');
+  if(a!==-1 && b>a){ try{ return JSON.parse(s.slice(a,b+1)); } catch{} }
+  // 4. Same on original text
+  const c=text.indexOf('{'), d=text.lastIndexOf('}');
+  if(c!==-1 && d>c){ try{ return JSON.parse(text.slice(c,d+1)); } catch{} }
+  throw new Error('Could not parse Gemini response. Try again.');
+}
+
+// ─── Gemini call ─────────────────────────────────────────────────────────────
+async function callGemini(prompt, maxTok=8192){
+  const key=getKey();
+  if(!key) throw new Error('No API key. Click <strong>⚙ API settings</strong> and paste your free key from aistudio.google.com.');
+  const model=document.getElementById('model-select').value;
+  const res=await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    { method:'POST',
+      headers:{'Content-Type':'application/json','x-goog-api-key':key},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.1,maxOutputTokens:maxTok}})
+    }
+  );
+  const data=await res.json();
+  if(data.error){
+    const m=data.error.message||'API error';
+    if(res.status===400) throw new Error('Invalid API key. Open ⚙ settings and re-paste.');
+    if(res.status===403) throw new Error('Key blocked. Google Cloud Console → Credentials → edit key → restrict to Generative Language API.');
+    throw new Error(m);
+  }
+  const text=data.candidates?.[0]?.content?.parts?.[0]?.text??'';
+  if(!text) throw new Error('Empty response. Try again.');
+  return extractJSON(text);
+}
+
+// ─── Prompts ─────────────────────────────────────────────────────────────────
+function oemPrompt(v){
+  const isManual=(v.trans||'').toLowerCase().includes('manual');
+  return `Generate OEM part numbers for every major serviceable component on this vehicle.
+
+Vehicle: ${v.year} ${v.make} ${v.model}${v.trim?' ('+v.trim+')':''}
+Engine: ${v.engine||'N/A'} | Drive: ${v.drive||'N/A'} | Body: ${v.body||'N/A'} | Trans: ${v.trans||'N/A'}
+
+Return ONLY raw JSON — no markdown, no extra text:
+{"components":[{"name":"Engine Air Filter","category":"Engine","description":"Intake air filtration","oem_number":"17220-5G0-A00"}]}
+
+Generate ALL of these components (90+ total):
+
+ENGINE: Engine Air Filter, Engine Oil Filter, Spark Plugs (set), Ignition Coils (set), Serpentine Belt, ${isManual?'Timing Chain Tensioner Kit':'Timing Belt Kit'}, PCV Valve, Crankshaft Position Sensor, Camshaft Position Sensor, Mass Airflow Sensor, Throttle Body Assembly, Intake Manifold Gasket Set, Valve Cover Gasket, Head Gasket Set, Front Engine Mount, Rear Engine Mount, Oil Pressure Sensor, Coolant Temperature Sensor
+
+TRANSMISSION: Transmission Filter Kit, Transmission Mount, Transmission Pan Gasket, Shift Solenoid Set, ${isManual?'Clutch Kit':'Torque Converter'}
+
+BRAKES: Front Brake Pads, Rear Brake Pads, Front Brake Rotors (pair), Rear Brake Rotors (pair), Front Brake Calipers (pair), Rear Brake Calipers (pair), Brake Master Cylinder, Brake Booster, Front ABS Wheel Speed Sensor, Rear ABS Wheel Speed Sensor
+
+SUSPENSION: Front Struts (pair), Rear Shocks/Struts (pair), Front Strut Mounts (pair), Front Coil Springs (pair), Rear Coil Springs (pair), Front Lower Control Arms (pair), Front Ball Joints (pair), Outer Tie Rod Ends (pair), Inner Tie Rod Ends (pair), Front Sway Bar End Links (pair), Rear Sway Bar End Links (pair), Front Sway Bar Bushings, Front Wheel Hub & Bearing Assembly, Rear Wheel Hub & Bearing Assembly
+
+STEERING: Rack and Pinion Assembly, Power Steering Pump, Power Steering Pressure Hose, Power Steering Return Hose
+
+ELECTRICAL: Car Battery, Alternator, Starter Motor, Upstream Oxygen Sensor, Downstream Oxygen Sensor, MAP Sensor, Throttle Position Sensor, Idle Air Control Valve, Knock Sensor
+
+COOLING: Radiator, Water Pump, Thermostat & Housing Kit, Coolant Overflow Reservoir, Upper Radiator Hose, Lower Radiator Hose, Heater Core Hoses (set), Radiator Fan Motor, Radiator Cap
+
+FUEL SYSTEM: Fuel Pump Assembly, Fuel Filter, Fuel Pressure Regulator, Fuel Injectors (set), Charcoal Canister Purge Valve, Fuel Tank Cap
+
+EXHAUST: Catalytic Converter, Exhaust Manifold, Exhaust Manifold Gasket Set, Flex Pipe / Front Exhaust Pipe, Muffler Assembly, Exhaust Hangers (set)
+
+HVAC: Cabin Air Filter, AC Compressor, AC Condenser, AC Evaporator Core, Blower Motor, Blower Motor Resistor, Heater Core, AC Receiver/Drier, Expansion Valve
+
+BODY: Windshield Wiper Blades (set), Hood Gas Struts (pair), Front Door Seals, Rear Door Seals
+
+OEM part number format for ${v.make} (use authentic format):
+Honda→17220-5G0-A00 | Toyota→90915-YZZD3 | Ford→FR3Z-6714-B | GM→25182496 | Dodge→04884899AB | BMW→11-42-7-566-327 | Mercedes→000-180-24-09 | Nissan→16546-JA10B | Hyundai/Kia→26300-35505 | Subaru→15208AA160 | VW/Audi→06A-906-433-B
+
+Category values must be exactly one of: Engine, Transmission, Brakes, Suspension, Steering, Electrical, Cooling, Fuel System, Exhaust, HVAC, Body`;
+}
+
+function altPrompt(v, comps){
+  const lines = comps.map(c=>`${c.oem_number}|${c.name}|${c.category}`).join('\n');
+  return `For each OEM part below for a ${v.year} ${v.make} ${v.model}, provide exactly 3 aftermarket alternatives.
+
+${lines}
+
+Return ONLY raw JSON — no markdown, no extra text:
+{"alternatives":{"OEM_NUMBER":[{"brand":"FRAM","part_number":"PH3600"},{"brand":"Bosch","part_number":"3330"},{"brand":"WIX","part_number":"51060"}]}}
+
+Use realistic part numbers for each brand. Brand guide by category:
+Engine/Filters → K&N, FRAM, Bosch, WIX, Purolator, Denso, NGK, Mann
+Brakes → Brembo, EBC, Hawk, Akebono, Wagner, StopTech, Raybestos, Centric
+Suspension/Steering → Monroe, KYB, Bilstein, Moog, Gabriel, Dorman, ACDelco, TRW, Sachs
+Electrical/Sensors → Denso, Bosch, Delphi, Standard Motor Products, Dorman, ACDelco, Walker Products
+Cooling → Mishimoto, Spectra Premium, Gates, Dorman, Stant, Modine
+Fuel System → Walbro, Delphi, Carter, Spectra Premium, Dorman, Bosch
+Belts/Hoses → Gates, Dayco, Continental, Bando, Goodyear
+Exhaust → Walker, MagnaFlow, AP Exhaust, Dorman, Bosal
+HVAC → Four Seasons, Denso, UAC, Dorman, Spectra Premium
+Body → Dorman, Sherman, Replace, AutoTrust
+
+The "alternatives" object must have one key per OEM number from the list above.`;
+}
+
+// ─── Main run ─────────────────────────────────────────────────────────────────
 async function run(){
-  const vin = document.getElementById('vin-input').value.trim();
+  const vin=document.getElementById('vin-input').value.trim();
   if(vin.length!==17) return;
 
   clearErr();
-  components=[]; activeCat='All';
-  ['vehicle-card','filter-bar','stat-bar'].forEach(id=>document.getElementById(id).style.display='none');
+  components=[]; activeCat='All'; altLoaded=false;
+  ['vehicle-card','filter-bar','stat-bar','retry-bar'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
   document.getElementById('output').innerHTML='';
   document.getElementById('footer-note').style.display='none';
   document.getElementById('empty-state').style.display='none';
+  document.getElementById('step-indicator').style.display='none';
 
-  const btn = document.getElementById('run-btn');
-  const setBtn = t => { btn.textContent=t; btn.disabled=true; };
+  const btn=document.getElementById('run-btn');
+  const setBtn=(t,dis=true)=>{ btn.textContent=t; btn.disabled=dis; };
+  setBtn('⏳ Decoding VIN…');
 
   try{
-    // ── Step 1: NHTSA VIN decode (free, no key) ──────────────────────────────
-    setBtn('⏳ Decoding VIN…');
-    const nr = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`);
-    const nd = await nr.json();
-    const v = nd.Results?.[0];
+    // ── NHTSA VIN decode ──────────────────────────────────────────────────────
+    const nr=await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`);
+    const nd=await nr.json();
+    const v=nd.Results?.[0];
     if(!v?.Make) throw new Error('VIN not found in NHTSA database. Check the number and try again.');
 
-    const eng = [
-      v.DisplacementL ? parseFloat(v.DisplacementL).toFixed(1)+'L' : null,
-      v.EngineCylinders ? `V${v.EngineCylinders}` : null,
-      v.FuelTypePrimary || null
-    ].filter(Boolean).join(' ');
+    const eng=[v.DisplacementL?parseFloat(v.DisplacementL).toFixed(1)+'L':null,v.EngineCylinders?`V${v.EngineCylinders}`:null,v.FuelTypePrimary||null].filter(Boolean).join(' ');
+    vehicle={make:v.Make,model:v.Model,year:v.ModelYear,trim:v.Trim||'',engine:eng||v.EngineModel||'',drive:v.DriveType||'',body:v.BodyClass||'',trans:v.TransmissionStyle||'',vin};
 
-    vehicle = {
-      make:v.Make, model:v.Model, year:v.ModelYear, trim:v.Trim||'',
-      engine:eng||v.EngineModel||'', drive:v.DriveType||'',
-      body:v.BodyClass||'', trans:v.TransmissionStyle||'', vin
-    };
-
-    // Show vehicle card
-    document.getElementById('veh-title').innerHTML =
-      `${vehicle.year} ${vehicle.make} ${vehicle.model}` +
-      (vehicle.trim ? ` <span style="color:#8b949e;font-weight:400;font-size:14px">${vehicle.trim}</span>` : '');
-    document.getElementById('veh-vin').textContent = vin;
-    document.getElementById('veh-specs').innerHTML =
+    document.getElementById('veh-title').innerHTML=
+      `${vehicle.year} ${vehicle.make} ${vehicle.model}`+
+      (vehicle.trim?` <span style="color:#8b949e;font-weight:400;font-size:14px">${vehicle.trim}</span>`:'');
+    document.getElementById('veh-vin').textContent=vin;
+    document.getElementById('veh-specs').innerHTML=
       [['Engine',vehicle.engine],['Drive',vehicle.drive],['Body',vehicle.body],['Trans.',vehicle.trans]]
       .filter(([,val])=>val)
       .map(([l,val])=>`<div class="info-cell"><div class="info-label">${l}</div><div class="info-value">${val}</div></div>`)
       .join('');
     document.getElementById('vehicle-card').style.display='block';
 
-    // ── Step 2: Gemini — all parts + alternatives in one call ────────────────
-    setBtn('⚙️ Building full parts database…');
-    document.getElementById('output').innerHTML =
-      `<div class="loading-msg">⚙️ Generating 90+ components with OEM & aftermarket alternatives…<br><span style="font-size:11px;margin-top:4px;display:block">This takes about 20–30 seconds</span></div>`;
+    // ── Stage 1: OEM parts ────────────────────────────────────────────────────
+    setStep('active','wait');
+    setBtn('⚙️ Step 1/2 — Loading OEM parts…');
 
-    const data = await callGemini(`
-Generate a complete automotive parts database for the vehicle below.
-For EVERY component: provide the OEM part AND exactly 3 aftermarket alternatives.
+    const oemData=await callGemini(oemPrompt(vehicle), 6000);
+    components=(oemData.components??[]).map(c=>({
+      name:c.name, category:c.category||'Other',
+      description:c.description||'', oem_number:c.oem_number,
+      parts:[{brand:vehicle.make+' OEM',part_number:c.oem_number,is_oem:true}]
+    }));
 
-Vehicle: ${vehicle.year} ${vehicle.make} ${vehicle.model}${vehicle.trim?' ('+vehicle.trim+')':''}
-Engine: ${vehicle.engine||'N/A'} | Drive: ${vehicle.drive||'N/A'} | Body: ${vehicle.body||'N/A'} | Trans: ${vehicle.trans||'N/A'}
-
-Return ONLY raw JSON — no markdown fences, no preamble, no extra text:
-{"components":[{"name":"Engine Air Filter","category":"Engine","description":"Intake air filtration","parts":[{"brand":"${vehicle.make} OEM","part_number":"17220-5G0-A00","is_oem":true},{"brand":"K&N","part_number":"33-2460","is_oem":false},{"brand":"FRAM","part_number":"CA10755","is_oem":false},{"brand":"Bosch","part_number":"5580WS","is_oem":false}]}]}
-
-REQUIRED — generate every component listed below (90+ total, grouped by category):
-
-ENGINE (generate all 18):
-Engine Air Filter, Engine Oil Filter, Spark Plugs (set), Ignition Coils (set), Serpentine Belt,
-${(vehicle.trans||'').toLowerCase().includes('manual')?'Timing Chain Tensioner Kit':'Timing Belt Kit (or Timing Chain Tensioner Kit if chain-driven)'},
-PCV Valve, Crankshaft Position Sensor, Camshaft Position Sensor, Mass Airflow Sensor,
-Throttle Body Assembly, Intake Manifold Gasket Set, Valve Cover Gasket Set, Head Gasket Set,
-Front Engine Mount, Rear Engine Mount, Oil Pressure Sensor, Coolant Temperature Sensor
-
-TRANSMISSION (generate all 5):
-Transmission Filter Kit, Transmission Mount, Transmission Pan Gasket, Shift Solenoid Set,
-${(vehicle.trans||'').toLowerCase().includes('manual')?'Clutch Kit':'Torque Converter'}
-
-BRAKES (generate all 10):
-Front Brake Pads, Rear Brake Pads, Front Brake Rotors (pair), Rear Brake Rotors (pair),
-Front Brake Calipers (pair), Rear Brake Calipers (pair), Brake Master Cylinder, Brake Booster,
-Front ABS Wheel Speed Sensor, Rear ABS Wheel Speed Sensor
-
-SUSPENSION (generate all 14):
-Front Struts (pair), Rear Shocks/Struts (pair), Front Strut Mounts (pair), Front Coil Springs (pair),
-Rear Coil Springs (pair), Front Lower Control Arms (pair), Front Ball Joints (pair),
-Outer Tie Rod Ends (pair), Inner Tie Rod Ends (pair), Front Sway Bar End Links (pair),
-Rear Sway Bar End Links (pair), Front Sway Bar Bushings, Front Wheel Hub & Bearing Assembly, Rear Wheel Hub & Bearing Assembly
-
-STEERING (generate all 4):
-Rack and Pinion Assembly, Power Steering Pump, Power Steering Pressure Hose, Power Steering Return Hose
-
-ELECTRICAL (generate all 9):
-Car Battery, Alternator, Starter Motor, Upstream Oxygen Sensor, Downstream Oxygen Sensor,
-MAP Sensor, Throttle Position Sensor, Idle Air Control Valve, Knock Sensor
-
-COOLING (generate all 9):
-Radiator, Water Pump, Thermostat & Housing Kit, Coolant Overflow Reservoir,
-Upper Radiator Hose, Lower Radiator Hose, Heater Core Hoses (set), Radiator Fan Motor, Radiator Cap
-
-FUEL SYSTEM (generate all 6):
-Fuel Pump Assembly, Fuel Filter, Fuel Pressure Regulator, Fuel Injectors (set),
-Charcoal Canister Purge Valve, Fuel Tank Cap
-
-EXHAUST (generate all 6):
-Catalytic Converter, Exhaust Manifold, Exhaust Manifold Gasket Set, Flex Pipe / Front Exhaust Pipe,
-Muffler Assembly, Exhaust Hangers (set)
-
-HVAC (generate all 9):
-Cabin Air Filter, AC Compressor, AC Condenser, AC Evaporator Core, Blower Motor,
-Blower Motor Resistor, Heater Core, AC Receiver/Drier, Expansion Valve / Orifice Tube
-
-BODY (generate all 4):
-Windshield Wiper Blades (set), Hood Gas Struts (pair), Front Door Seals, Rear Door Seals
-
-PART NUMBER RULES:
-• OEM numbers must follow ${vehicle.make}'s real format:
-  Honda→17220-5G0-A00 | Toyota→90915-YZZD3 | Ford→FR3Z-6714-B | GM/Chevy→25182496
-  Dodge/Chrysler→04884899AB | BMW→11-42-7-566-327 | Mercedes→000-180-24-09
-  Nissan→16546-JA10B | Hyundai/Kia→26300-35505 | Subaru→15208AA160 | VW/Audi→06A-906-433-B
-• Use realistic aftermarket part numbers — not placeholder strings
-• is_oem must be true for OEM, false for all aftermarket entries
-
-AFTERMARKET BRAND ASSIGNMENTS (pick 3 appropriate brands per component):
-Filters → K&N, FRAM, Bosch, WIX, Purolator, Denso, NGK
-Brakes → Brembo, EBC, Hawk, Akebono, Wagner, StopTech, Raybestos, Centric, ACDelco
-Suspension/Steering → Monroe, KYB, Bilstein, Moog, Gabriel, Dorman, ACDelco, Sachs, TRW
-Electrical/Sensors → Denso, Bosch, Delphi, Standard Motor Products, Dorman, ACDelco, Walker Products
-Cooling → Mishimoto, Spectra Premium, Gates, Dorman, Modine, Stant
-Fuel System → Walbro, Delphi, Carter, Spectra Premium, Dorman, Bosch
-Belts/Hoses → Gates, Dayco, Continental, Bando, Goodyear
-Exhaust → Walker, MagnaFlow, AP Exhaust, Dorman, Bosal
-HVAC → Four Seasons, Denso, UAC, Dorman, Spectra Premium
-Body → Dorman, Sherman, Replace, AutoTrust`
-    );
-
-    components = data.components ?? [];
-    if(!components.length) throw new Error('No components returned. Try again.');
+    if(!components.length) throw new Error('No components returned in stage 1. Try again.');
 
     renderCatChips();
     render();
-    renderStats();
-    document.getElementById('filter-bar').style.display = 'block';
-    document.getElementById('footer-note').style.display = 'block';
+    renderStats(false);
+    document.getElementById('filter-bar').style.display='block';
+    document.getElementById('footer-note').style.display='block';
+    setStep('done','active');
+
+    // ── Stage 2: Alternatives ─────────────────────────────────────────────────
+    setBtn('🔄 Step 2/2 — Loading alternatives…');
+    await loadAlternatives(true);
 
   } catch(e){
     document.getElementById('output').innerHTML='';
-    showErr(e.message || 'Unexpected error. Please try again.');
-    document.getElementById('empty-state').style.display = 'block';
-  } finally {
-    setBtn('🔍 Get Full Parts List');
-    document.getElementById('run-btn').disabled = document.getElementById('vin-input').value.length!==17;
+    showErr(e.message||'Unexpected error. Please try again.');
+    document.getElementById('empty-state').style.display=components.length?'none':'block';
+    setStep('wait','wait');
+    document.getElementById('step-indicator').style.display='none';
+  } finally{
+    setBtn('🔍 Get Full Parts List', false);
+    document.getElementById('run-btn').disabled=document.getElementById('vin-input').value.length!==17;
   }
 }
 
-// ─── Stats bar ─────────────────────────────────────────────────────────────────
-function renderStats(){
-  const grp = groupBy(components, c=>c.category);
-  const totalParts = components.reduce((s,c)=>s+c.parts.length,0);
-  const alts = components.reduce((s,c)=>s+c.parts.filter(p=>!p.is_oem).length,0);
-  const sb = document.getElementById('stat-bar');
-  sb.innerHTML = `
+// ─── Load alternatives (also callable standalone for retry) ──────────────────
+async function loadAlternatives(fromRun=false){
+  if(!components.length) return;
+  const btn=document.getElementById('run-btn');
+  if(!fromRun){ btn.textContent='🔄 Loading alternatives…'; btn.disabled=true; }
+
+  try{
+    document.getElementById('retry-bar').style.display='none';
+    const altData=await callGemini(altPrompt(vehicle,components), 6000);
+    const altMap=altData.alternatives??{};
+
+    components=components.map(c=>{
+      const alts=(altMap[c.oem_number]??[]).slice(0,3);
+      return{
+        ...c,
+        parts:[
+          {brand:vehicle.make+' OEM',part_number:c.oem_number,is_oem:true},
+          ...alts.map(a=>({brand:a.brand,part_number:a.part_number,is_oem:false}))
+        ]
+      };
+    });
+    altLoaded=true;
+    render();
+    renderStats(true);
+    setStep('done','done');
+  } catch(e){
+    // Show OEM data with a retry bar
+    const rb=document.getElementById('retry-bar');
+    rb.style.display='flex';
+    if(!fromRun) showErr('Could not load alternatives: '+e.message);
+    setStep('done','wait');
+  } finally{
+    if(!fromRun){
+      btn.textContent='🔍 Get Full Parts List';
+      btn.disabled=document.getElementById('vin-input').value.length!==17;
+    }
+  }
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+function renderStats(withAlts){
+  const grp=groupBy(components,c=>c.category);
+  const alts=withAlts?components.reduce((s,c)=>s+c.parts.filter(p=>!p.is_oem).length,0):null;
+  const total=withAlts?components.reduce((s,c)=>s+c.parts.length,0):components.length;
+  const sb=document.getElementById('stat-bar');
+  sb.innerHTML=`
     <div class="stat"><strong>${components.length}</strong> components</div>
     <div class="stat"><strong>${Object.keys(grp).length}</strong> categories</div>
-    <div class="stat"><strong>${alts}</strong> alternatives</div>
-    <div class="stat"><strong>${totalParts}</strong> total part numbers</div>`;
+    ${withAlts?`<div class="stat"><strong>${alts}</strong> alternatives</div>
+    <div class="stat"><strong>${total}</strong> total part numbers</div>`:'<div class="stat" style="color:#58a6ff">⏳ loading alternatives…</div>'}`;
   sb.style.display='flex';
 }
 
-// ─── Category chips ────────────────────────────────────────────────────────────
+// ─── Category chips ───────────────────────────────────────────────────────────
 function groupBy(arr,fn){ return arr.reduce((a,x)=>{ (a[fn(x)]??=[]).push(x); return a; },{}); }
 
 function renderCatChips(){
-  const grp = groupBy(components,c=>c.category);
-  const cats = ['All',...Object.keys(grp).sort()];
-  document.getElementById('cat-chips').innerHTML = cats.map(c=>{
-    const color = c==='All' ? '#58a6ff' : (CATS[c]||'#6b7280');
-    const count = c==='All' ? components.length : (grp[c]?.length??0);
-    const label = c==='All' ? `All (${count})` : `${ICONS[c]||'🔧'} ${c} (${count})`;
-    const act = activeCat===c;
-    return `<button class="chip"
-      style="color:${act?color:'#8b949e'};border-color:${act?color:'#30363d'};background:${act?color+'22':'#161b22'}"
-      onclick="setCat('${c}')">${label}</button>`;
+  const grp=groupBy(components,c=>c.category);
+  const cats=['All',...Object.keys(grp).sort()];
+  document.getElementById('cat-chips').innerHTML=cats.map(c=>{
+    const color=c==='All'?'#58a6ff':(CATS[c]||'#6b7280');
+    const count=c==='All'?components.length:(grp[c]?.length??0);
+    const label=c==='All'?`All (${count})`:`${ICONS[c]||'🔧'} ${c} (${count})`;
+    const act=activeCat===c;
+    return `<button class="chip" style="color:${act?color:'#8b949e'};border-color:${act?color:'#30363d'};background:${act?color+'22':'#161b22'}" onclick="setCat('${c}')">${label}</button>`;
   }).join('');
 }
 
 function setCat(c){ activeCat=c; renderCatChips(); render(); }
 
-// ─── Render ─────────────────────────────────────────────────────────────────────
+// ─── Render ───────────────────────────────────────────────────────────────────
 function render(){
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const filtered = components.filter(comp=>{
-    if(activeCat!=='All' && comp.category!==activeCat) return false;
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const filtered=components.filter(comp=>{
+    if(activeCat!=='All'&&comp.category!==activeCat) return false;
     if(!q) return true;
     return comp.name.toLowerCase().includes(q)
-      || (comp.description||'').toLowerCase().includes(q)
-      || comp.parts.some(p=>p.brand.toLowerCase().includes(q)||p.part_number.toLowerCase().includes(q));
+      ||(comp.description||'').toLowerCase().includes(q)
+      ||comp.parts.some(p=>p.brand.toLowerCase().includes(q)||p.part_number.toLowerCase().includes(q));
   });
 
-  const grp = groupBy(filtered,c=>c.category);
-  const out = document.getElementById('output');
+  const grp=groupBy(filtered,c=>c.category);
+  const out=document.getElementById('output');
 
   if(!filtered.length){
-    out.innerHTML=`<div style="text-align:center;padding:30px;color:#8b949e;font-size:13px">
-      No results.
+    out.innerHTML=`<div style="text-align:center;padding:30px;color:#8b949e;font-size:13px">No results.
       <button onclick="document.getElementById('search-input').value='';render()"
-        style="background:none;border:none;color:#58a6ff;cursor:pointer;font-size:13px;padding:0;margin-left:4px">Clear search</button>
-    </div>`;
+        style="background:none;border:none;color:#58a6ff;cursor:pointer;font-size:13px;padding:0;margin-left:4px">Clear</button></div>`;
     return;
   }
 
-  out.innerHTML = Object.entries(grp).sort(([a],[b])=>a.localeCompare(b)).map(([cat,comps])=>{
-    const color = CATS[cat]||'#6b7280';
-    const icon  = ICONS[cat]||'🔧';
+  out.innerHTML=Object.entries(grp).sort(([a],[b])=>a.localeCompare(b)).map(([cat,comps])=>{
+    const color=CATS[cat]||'#6b7280', icon=ICONS[cat]||'🔧';
 
-    const cards = comps.map(comp=>{
-      const rows = comp.parts.map(p => {
-        const oem = p.is_oem;
+    const cards=comps.map(comp=>{
+      const rows=comp.parts.map(p=>{
+        const oem=p.is_oem;
+        const isWaiting=!oem&&!altLoaded&&p.part_number==='…';
         return `<tr class="${oem?'oem-tr':'alt-tr'}">
-          <td class="td-badge"><span class="badge ${oem?'badge-oem':'badge-alt'}">${oem?'OEM':'ALT'}</span></td>
-          <td class="td-brand ${oem?'oem-brand':'alt-brand'}">${p.brand}</td>
-          <td><code class="${oem?'oem-num':'alt-num'}">${p.part_number}</code></td>
+          <td class="td-badge">
+            <span class="badge ${oem?'badge-oem':isWaiting?'badge-wait':'badge-alt'}">${oem?'OEM':isWaiting?'…':'ALT'}</span>
+          </td>
+          <td class="${oem?'oem-brand':isWaiting?'wait-brand':'alt-brand'}">${p.brand}</td>
+          <td><code class="${oem?'oem-num':isWaiting?'wait-num':'alt-num'}">${p.part_number}</code></td>
         </tr>`;
       }).join('');
-
       return `<div class="comp-card">
         <div class="comp-head">
           <div class="comp-name">${comp.name}</div>
-          ${comp.description ? `<div class="comp-desc">${comp.description}</div>` : ''}
+          ${comp.description?`<div class="comp-desc">${comp.description}</div>`:''}
         </div>
         <table class="pt"><tbody>${rows}</tbody></table>
       </div>`;
@@ -505,7 +560,7 @@ function render(){
   }).join('');
 }
 
-// ─── Init ──────────────────────────────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────────────────
 updateBadge();
 </script>
 </body>
