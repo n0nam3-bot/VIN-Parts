@@ -176,7 +176,7 @@ const CATS={Engine:'#f87171',Transmission:'#fb923c',Brakes:'#facc15',Suspension:
 const ICONS={Engine:'⚙️',Transmission:'🔄',Brakes:'🛑',Suspension:'🔩',Steering:'🎯',Electrical:'⚡',Cooling:'🌡️','Fuel System':'⛽',Exhaust:'💨',HVAC:'❄️',Body:'🚘',Interior:'💺',Other:'🔧'};
 
 // ─── State ───────────────────────────────────────────────────────────────────
-let components=[], activeCat='All', saveTimer=null, vehicle=null, altLoaded=false;
+let components=[], altMap={}, activeCat='All', saveTimer=null, vehicle=null, altLoaded=false;
 
 // ─── Key ────────────────────────────────────────────────────────────────────
 const KS='vfinder_gkey';
@@ -275,63 +275,66 @@ async function callGemini(prompt, maxTok=16384){
 // ─── Prompts ─────────────────────────────────────────────────────────────────
 function buildOEMPrompt(v){
   const manual=(v.trans||'').toLowerCase().includes('manual');
-  return `You are an automotive parts API. Output ONLY a valid JSON object with no explanation, no markdown.
+  const isFord=(v.make||'').match(/ford/i);
+  return `You are an automotive parts API. Output ONLY valid JSON, no explanation, no markdown.
 
 Vehicle: ${v.year} ${v.make} ${v.model}${v.trim?' '+v.trim:''} | ${v.engine} | ${v.drive} | ${v.body} | ${v.trans}
 
-JSON schema (follow exactly):
+JSON schema:
 {"components":[{"name":"string","category":"string","description":"string","oem_number":"string"}]}
 
-Generate 45 components. Distribute across these categories with these minimums:
-Engine(8), Brakes(6), Suspension(6), Transmission(3), Electrical(5), Cooling(4), Fuel System(3), Exhaust(3), HVAC(4), Body(2), Steering(2), Interior(2)
+Generate exactly 65 components covering ALL of these:
 
-Category names must be EXACTLY one of: Engine, Transmission, Brakes, Suspension, Steering, Electrical, Cooling, Fuel System, Exhaust, HVAC, Body, Interior
+ENGINE (14): Engine Air Filter, Engine Oil Filter, Spark Plugs (set), Ignition Coils (set), Serpentine Belt, Timing Chain Tensioner Kit, PCV Valve, Mass Airflow Sensor, Crankshaft Position Sensor, Camshaft Position Sensor, Throttle Body Assembly, Valve Cover Gasket Set, Intake Manifold Gasket Set, EGR Valve
 
-OEM part numbers MUST follow ${v.make} manufacturer format:
-Honda/Acura: 17220-5G0-A00 | Toyota/Lexus: 90915-YZZD3 | Ford/Lincoln: FR3Z-6714-B
-GM/Chevy/GMC: 25182496 | Dodge/Chrysler/RAM: 04884899AB | BMW: 11-42-7-566-327
-Mercedes-Benz: 000-180-24-09 | Nissan/Infiniti: 16546-JA10B | Hyundai/Kia: 26300-35505
-Subaru: 15208AA160 | VW/Audi: 06A-906-433-B | Mazda: SH01-14-302 | Jeep: 68079747AA
+TRANSMISSION (5): Transmission Filter & Gasket Kit, Transmission Mount, Shift Solenoid Pack, Output Shaft Speed Sensor, ${manual?'Clutch Master Cylinder':'Torque Converter'}
 
-Output ONLY the JSON. No text before or after.`;
-}
+BRAKES (8): Front Brake Pads, Rear Brake Pads, Front Brake Rotors (pair), Rear Brake Rotors (pair), Brake Master Cylinder, Brake Booster, Front ABS Wheel Speed Sensor, Rear ABS Wheel Speed Sensor
+
+SUSPENSION (10): Front Shock Absorbers (pair), Rear Shock Absorbers (pair), Front Lower Ball Joints (pair), Front Lower Control Arms (pair), Outer Tie Rod Ends (pair), Inner Tie Rod Ends (pair), Front Sway Bar End Links (pair), Front Wheel Hub & Bearing Assembly, Rear Wheel Hub & Bearing Assembly, Front Track Bar (if 4WD/RWD truck/SUV)
+
+STEERING (4): Power Steering Pump, Power Steering Gear Box, Power Steering Pressure Hose, Power Steering Return Hose
+
+ELECTRICAL (6): Car Battery, Alternator, Starter Motor, Upstream O2 Sensor, Downstream O2 Sensor, Idle Air Control Valve
+
+COOLING (6): Radiator, Water Pump, Thermostat & Housing Kit, Upper Radiator Hose, Lower Radiator Hose, Radiator Cap
+
+FUEL SYSTEM (4): Fuel Pump Module Assembly, Fuel Filter, Fuel Pressure Regulator, Fuel Injectors (set)
+
+EXHAUST (4): Catalytic Converter (Driver Side), Catalytic Converter (Passenger Side), Exhaust Manifold Gasket Set, Muffler Assembly
+
+HVAC (5): Cabin Air Filter, AC Compressor, AC Condenser, Blower Motor, Heater Core
+
+BODY (3): Windshield Wiper Blades (set), Hood Lift Support Struts (pair), Fuel Door Release Cable
+
+INTERIOR (3): Power Window Switch (Driver), Interior Door Handle (Front), Seat Belt Pretensioner (Driver)
+
+- category must be EXACTLY one of: Engine, Transmission, Brakes, Suspension, Steering, Electrical, Cooling, Fuel System, Exhaust, HVAC, Body, Interior
+- Use authentic ${v.make} OEM part number format: ${isFord?'Ford: 4L3Z-6714-AA or YL1Z-8575-AA':'Honda→17220-5G0-A00 | Toyota→90915-YZZD3 | GM→25182496 | Dodge→04884899AB | BMW→11-42-7-566-327 | Mercedes→000-180-24-09 | Nissan→16546-JA10B | Hyundai/Kia→26300-35505'}
+- Output ONLY the JSON object, nothing else`;}
 
 function buildAltPrompt(v, comps){
   const list=comps.map(c=>`${c.oem_number}|${c.name}|${c.category}`).join('\n');
-  return `You are an automotive parts API. Output ONLY a valid JSON object with no explanation, no markdown.
+  return `You are an automotive parts API. Output ONLY valid JSON, no explanation, no markdown.
 
 Vehicle: ${v.year} ${v.make} ${v.model}
 
-JSON schema (follow exactly):
+JSON schema:
 {"alternatives":{"OEM_PART_NUMBER":[{"brand":"string","part_number":"string"}]}}
 
-Provide exactly 3 aftermarket alternatives for EACH of these OEM parts:
+Provide exactly 3 aftermarket alternatives for each of the ${comps.length} OEM parts below:
 ${list}
 
-Every OEM_PART_NUMBER from the list above must appear as a key in "alternatives".
-
-Aftermarket brands to use (pick appropriate ones per category):
-Filters/Engine: K&N, FRAM, Bosch, WIX, Purolator, NGK, Denso
-Brakes: Brembo, EBC, Hawk, Akebono, Wagner, StopTech, Raybestos
-Suspension: Monroe, KYB, Bilstein, Moog, Gabriel, Sachs, ACDelco
-Electrical: Denso, Bosch, Delphi, Standard Motor Products, Dorman
-Cooling: Mishimoto, Spectra Premium, Gates, Dorman, Stant
-Fuel: Walbro, Delphi, Carter, Spectra Premium, Dorman
-Belts/Hoses: Gates, Dayco, Continental, Bando
-Exhaust: Walker, MagnaFlow, AP Exhaust, Dorman
-Steering: Moog, TRW, Cardone, Dorman
-HVAC: Four Seasons, Denso, UAC, Dorman
-Body: Dorman, Sherman, Replace
-
-Output ONLY the JSON. No text before or after.`;
-}
+Every OEM number above MUST appear as a key in "alternatives".
+Brands: Filters→K&N,FRAM,Bosch,WIX,Purolator | Brakes→Brembo,EBC,Hawk,Akebono,Wagner,StopTech | Suspension→Monroe,KYB,Bilstein,Moog,Gabriel | Electrical→Denso,Bosch,Delphi,Standard Motor Products,Dorman | Cooling→Mishimoto,Spectra Premium,Gates,Dorman | Fuel→Walbro,Delphi,Carter,Dorman | Exhaust→Walker,MagnaFlow,AP Exhaust | Steering→Moog,TRW,Cardone,Dorman | HVAC→Four Seasons,Denso,UAC,Dorman | Body/Interior→Dorman,Sherman,Replace
+Use realistic part numbers. Output ONLY the JSON object, nothing else.`;}
 
 // ─── Main run ─────────────────────────────────────────────────────────────────
 async function run(){
   const vin=document.getElementById('vin-input').value.trim();
   if(vin.length!==17) return;
   clearErr();
-  components=[]; activeCat='All'; altLoaded=false;
+  components=[]; altMap={}; activeCat='All'; altLoaded=false;
   ['vehicle-card','filter-bar','stat-bar','retry-bar'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
   document.getElementById('output').innerHTML='';
   document.getElementById('footer-note').style.display='none';
@@ -347,7 +350,7 @@ async function run(){
     const nr=await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/${vin}?format=json`);
     const nd=await nr.json();
     const v=nd.Results?.[0];
-    if(!v?.Make) throw {userMsg:'VIN not found in NHTSA database. Check the number.',raw:''};
+    if(!v?.Make) throw {userMsg:'VIN not found in NHTSA database.',raw:''};
     const eng=[v.DisplacementL?parseFloat(v.DisplacementL).toFixed(1)+'L':null,v.EngineCylinders?`V${v.EngineCylinders}`:null,v.FuelTypePrimary||null].filter(Boolean).join(' ');
     vehicle={make:v.Make,model:v.Model,year:v.ModelYear,trim:v.Trim||'',engine:eng||v.EngineModel||'',drive:v.DriveType||'',body:v.BodyClass||'',trans:v.TransmissionStyle||'',vin};
 
@@ -356,26 +359,24 @@ async function run(){
     document.getElementById('veh-specs').innerHTML=[['Engine',vehicle.engine],['Drive',vehicle.drive],['Body',vehicle.body],['Trans.',vehicle.trans]].filter(([,val])=>val).map(([l,val])=>`<div class="info-cell"><div class="info-label">${l}</div><div class="info-value">${val}</div></div>`).join('');
     document.getElementById('vehicle-card').style.display='block';
 
-    // Stage 1 — OEM
+    // Stage 1 — OEM parts
     setStep('active','idle');
     setBtn('⚙️ Step 1/2 — Loading OEM parts…');
     const oemData=await callGemini(buildOEMPrompt(vehicle),16384);
-    components=(oemData.components??[]).map(c=>({name:c.name,category:c.category||'Other',description:c.description||'',oem_number:c.oem_number,parts:[{brand:vehicle.make+' OEM',part_number:c.oem_number,is_oem:true}]}));
-    if(!components.length) throw {userMsg:'Stage 1 returned no components.',raw:''};
+    components=(oemData.components??[]).map(c=>({name:c.name,category:c.category||'Other',description:c.description||'',oem_number:c.oem_number}));
+    if(!components.length) throw {userMsg:'No OEM parts returned. Try again.',raw:''};
 
     renderCatChips(); render(); renderStats(false);
     document.getElementById('filter-bar').style.display='block';
     document.getElementById('footer-note').style.display='block';
 
-    // Stage 2 — Alternatives
+    // Stage 2 — Alternatives in two batches
     setStep('done','active');
     setBtn('🔄 Step 2/2 — Loading alternatives…');
     await loadAlts(true);
 
   } catch(e){
-    const msg=e.userMsg||e.message||'Unexpected error.';
-    const raw=e.raw||'';
-    showErr(msg,raw);
+    showErr(e.userMsg||e.message||'Unexpected error.',e.raw||'');
     if(!components.length) document.getElementById('empty-state').style.display='block';
     document.getElementById('step-bar').style.display='none';
   } finally{
@@ -384,36 +385,49 @@ async function run(){
   }
 }
 
-// ─── Load alternatives ────────────────────────────────────────────────────────
+// ─── Load alternatives in two batches ────────────────────────────────────────
 async function loadAlts(fromRun=false){
   if(!components.length||!vehicle) return;
   const btn=document.getElementById('run-btn');
   if(!fromRun){btn.textContent='🔄 Loading alternatives…';btn.disabled=true;}
   document.getElementById('retry-bar').style.display='none';
-  try{
-    const data=await callGemini(buildAltPrompt(vehicle,components),16384);
-    const map=data.alternatives??{};
-    components=components.map(c=>{
-      const alts=(map[c.oem_number]??[]).slice(0,3);
-      return{...c,parts:[{brand:vehicle.make+' OEM',part_number:c.oem_number,is_oem:true},...alts.map(a=>({brand:a.brand,part_number:a.part_number,is_oem:false}))]};
-    });
-    altLoaded=true; render(); renderStats(true); setStep('done','done');
-  } catch(e){
-    document.getElementById('retry-bar').style.display='flex';
-    if(!fromRun) showErr((e.userMsg||e.message||'Alternatives failed.'),e.raw||'');
-    setStep('done','idle');
-  } finally{
-    if(!fromRun){btn.textContent='🔍 Get Full Parts List';btn.disabled=false;}
+
+  const mid=Math.ceil(components.length/2);
+  const batches=[components.slice(0,mid), components.slice(mid)];
+  const errors=[];
+
+  for(let i=0;i<batches.length;i++){
+    if(!fromRun) btn.textContent=`🔄 Alternatives ${i+1}/2…`;
+    else document.getElementById('run-btn').textContent=`🔄 Step 2/2 — Alternatives ${i+1}/2…`;
+    try{
+      const data=await callGemini(buildAltPrompt(vehicle,batches[i]),8192);
+      Object.assign(altMap, data.alternatives??{});
+      render(); // update UI after each batch
+    } catch(e){
+      errors.push(`Batch ${i+1}: ${e.userMsg||e.message}`);
+    }
   }
+
+  if(Object.keys(altMap).length>0){
+    altLoaded=true; renderStats(true); setStep('done','done');
+  }
+  if(errors.length){
+    const rb=document.getElementById('retry-bar');
+    rb.querySelector('span').textContent=`⚠️ ${errors.join(' | ')} — OEM data shown above.`;
+    rb.style.display='flex';
+    if(!altLoaded) setStep('done','idle');
+  }
+
+  if(!fromRun){btn.textContent='🔍 Get Full Parts List';btn.disabled=false;}
 }
 
 // ─── Stats ───────────────────────────────────────────────────────────────────
 function renderStats(withAlts){
   const grp=groupBy(components,c=>c.category);
-  const alts=withAlts?components.reduce((s,c)=>s+c.parts.filter(p=>!p.is_oem).length,0):null;
-  const total=withAlts?components.reduce((s,c)=>s+c.parts.length,0):components.length;
+  const altCount=Object.keys(altMap).length;
+  const total=components.length+(altCount*3);
   const sb=document.getElementById('stat-bar');
-  sb.innerHTML=`<div class="stat"><strong>${components.length}</strong> components</div><div class="stat"><strong>${Object.keys(grp).length}</strong> categories</div>${withAlts?`<div class="stat"><strong>${alts}</strong> alternatives</div><div class="stat"><strong>${total}</strong> total part #s</div>`:'<div class="stat" style="color:#58a6ff;animation:pulse 1s infinite">⏳ loading alternatives…</div>'}`;
+  sb.innerHTML=`<div class="stat"><strong>${components.length}</strong> components</div><div class="stat"><strong>${Object.keys(grp).length}</strong> categories</div>${withAlts?`<div class="stat"><strong>${altCount*3}</strong> alternatives</div><div class="stat"><strong>${total}</strong> total part #s</div>`:'<div class="stat" style="color:#58a6ff;animation:pulse 1s infinite">⏳ loading alternatives…</div>'}`;
   sb.style.display='flex';
 }
 
@@ -435,10 +449,15 @@ function setCat(c){activeCat=c;renderCatChips();render();}
 // ─── Render ───────────────────────────────────────────────────────────────────
 function render(){
   const q=document.getElementById('search-input').value.toLowerCase();
+  const alts=(oem)=>(altMap[oem]??[]).slice(0,3);
+
   const filtered=components.filter(c=>{
     if(activeCat!=='All'&&c.category!==activeCat) return false;
     if(!q) return true;
-    return c.name.toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q)||c.parts.some(p=>p.brand.toLowerCase().includes(q)||p.part_number.toLowerCase().includes(q));
+    const ca=alts(c.oem_number);
+    return c.name.toLowerCase().includes(q)||(c.description||'').toLowerCase().includes(q)
+      ||c.oem_number.toLowerCase().includes(q)
+      ||ca.some(a=>a.brand.toLowerCase().includes(q)||a.part_number.toLowerCase().includes(q));
   });
   const grp=groupBy(filtered,c=>c.category);
   const out=document.getElementById('output');
@@ -446,11 +465,10 @@ function render(){
   out.innerHTML=Object.entries(grp).sort(([a],[b])=>a.localeCompare(b)).map(([cat,comps])=>{
     const col=CATS[cat]||'#6b7280',icon=ICONS[cat]||'🔧';
     const cards=comps.map(comp=>{
-      const rows=comp.parts.map(p=>{
-        const oem=p.is_oem;
-        return `<tr class="${oem?'oem-tr':'alt-tr'}"><td class="td-badge"><span class="badge ${oem?'badge-oem':'badge-alt'}">${oem?'OEM':'ALT'}</span></td><td class="${oem?'oem-brand':'alt-brand'}">${p.brand}</td><td><code class="${oem?'oem-num':'alt-num'}">${p.part_number}</code></td></tr>`;
-      }).join('');
-      return `<div class="comp-card"><div class="comp-head"><div class="comp-name">${comp.name}</div>${comp.description?`<div class="comp-desc">${comp.description}</div>`:''}</div><table class="pt"><tbody>${rows}</tbody></table></div>`;
+      const compAlts=alts(comp.oem_number);
+      const oemRow=`<tr class="oem-tr"><td class="td-badge"><span class="badge badge-oem">OEM</span></td><td class="oem-brand">${vehicle?.make||''} OEM</td><td><code class="oem-num">${comp.oem_number}</code></td></tr>`;
+      const altRows=compAlts.map(a=>`<tr class="alt-tr"><td class="td-badge"><span class="badge badge-alt">ALT</span></td><td class="alt-brand">${a.brand}</td><td><code class="alt-num">${a.part_number}</code></td></tr>`).join('');
+      return `<div class="comp-card"><div class="comp-head"><div class="comp-name">${comp.name}</div>${comp.description?`<div class="comp-desc">${comp.description}</div>`:''}</div><table class="pt"><tbody>${oemRow}${altRows}</tbody></table></div>`;
     }).join('');
     return `<div style="margin-bottom:22px"><div style="display:flex;align-items:center;gap:7px;color:${col};font-size:13px;font-weight:600;margin-bottom:8px"><div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0"></div>${icon} ${cat}<span style="color:#484f58;font-size:11px;font-weight:400">— ${comps.length} components</span></div>${cards}</div>`;
   }).join('');
