@@ -240,7 +240,7 @@ function extractJSON(raw){
 }
 
 // ─── Gemini ──────────────────────────────────────────────────────────────────
-async function callGemini(prompt, maxTok=6000){
+async function callGemini(prompt, maxTok=16384){
   const key=getKey();
   if(!key) throw new Error('No API key — click <strong>⚙ API settings</strong> above.');
   const model=document.getElementById('model-select').value;
@@ -282,8 +282,8 @@ Vehicle: ${v.year} ${v.make} ${v.model}${v.trim?' '+v.trim:''} | ${v.engine} | $
 JSON schema (follow exactly):
 {"components":[{"name":"string","category":"string","description":"string","oem_number":"string"}]}
 
-Generate 60 components. Distribute across these categories with these minimums:
-Engine(10), Brakes(8), Suspension(8), Transmission(4), Electrical(7), Cooling(6), Fuel System(5), Exhaust(4), HVAC(5), Body(3), Steering(3), ${manual?'':'Interior('}${manual?'':'3)'}
+Generate 45 components. Distribute across these categories with these minimums:
+Engine(8), Brakes(6), Suspension(6), Transmission(3), Electrical(5), Cooling(4), Fuel System(3), Exhaust(3), HVAC(4), Body(2), Steering(2), Interior(2)
 
 Category names must be EXACTLY one of: Engine, Transmission, Brakes, Suspension, Steering, Electrical, Cooling, Fuel System, Exhaust, HVAC, Body, Interior
 
@@ -359,7 +359,7 @@ async function run(){
     // Stage 1 — OEM
     setStep('active','idle');
     setBtn('⚙️ Step 1/2 — Loading OEM parts…');
-    const oemData=await callGemini(buildOEMPrompt(vehicle),6000);
+    const oemData=await callGemini(buildOEMPrompt(vehicle),16384);
     components=(oemData.components??[]).map(c=>({name:c.name,category:c.category||'Other',description:c.description||'',oem_number:c.oem_number,parts:[{brand:vehicle.make+' OEM',part_number:c.oem_number,is_oem:true}]}));
     if(!components.length) throw {userMsg:'Stage 1 returned no components.',raw:''};
 
@@ -391,7 +391,7 @@ async function loadAlts(fromRun=false){
   if(!fromRun){btn.textContent='🔄 Loading alternatives…';btn.disabled=true;}
   document.getElementById('retry-bar').style.display='none';
   try{
-    const data=await callGemini(buildAltPrompt(vehicle,components),6000);
+    const data=await callGemini(buildAltPrompt(vehicle,components),16384);
     const map=data.alternatives??{};
     components=components.map(c=>{
       const alts=(map[c.oem_number]??[]).slice(0,3);
